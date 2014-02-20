@@ -110,6 +110,8 @@
 		18FBCF1317EA5EC800FDF286 /* sodacan.xml in Resources */ = {isa = PBXBuildFile; fileRef = 18FBCF0F17EA5EC800FDF286 /* sodacan.xml */; };
 		18FBCF1417EA5EC800FDF286 /* TextureSoccerBall.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FBCF1017EA5EC800FDF286 /* TextureSoccerBall.png */; };
 		18FBCF1517EA5EC800FDF286 /* TextureTransparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FBCF1117EA5EC800FDF286 /* TextureTransparent.png */; };
+		30AA722018B6A7FD0017336C /* KawaSample.dat in Resources */ = {isa = PBXBuildFile; fileRef = 30AA721E18B6A7FD0017336C /* KawaSample.dat */; };
+		30AA722118B6A7FD0017336C /* KawaSample.xml in Resources */ = {isa = PBXBuildFile; fileRef = 30AA721F18B6A7FD0017336C /* KawaSample.xml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -262,6 +264,8 @@
 		18FBCF1017EA5EC800FDF286 /* TextureSoccerBall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TextureSoccerBall.png; sourceTree = "<group>"; };
 		18FBCF1117EA5EC800FDF286 /* TextureTransparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TextureTransparent.png; sourceTree = "<group>"; };
 		18FBCF1617EA635400FDF286 /* SoccerballSphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoccerballSphere.h; sourceTree = "<group>"; };
+		30AA721E18B6A7FD0017336C /* KawaSample.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = KawaSample.dat; sourceTree = "<group>"; };
+		30AA721F18B6A7FD0017336C /* KawaSample.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = KawaSample.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -330,6 +334,8 @@
 		1860C90017F1EB6F00078D7A /* ImageTargets */ = {
 			isa = PBXGroup;
 			children = (
+				30AA721E18B6A7FD0017336C /* KawaSample.dat */,
+				30AA721F18B6A7FD0017336C /* KawaSample.xml */,
 			);
 			path = ImageTargets;
 			sourceTree = "<group>";
@@ -742,6 +748,7 @@
 				188AD59117DE3D54008BE2C8 /* TR_about.html in Resources */,
 				18D1686C18157802004D017D /* button_cancel_pressed.png in Resources */,
 				188AD5CE17DE407D008BE2C8 /* CR_about.html in Resources */,
+				30AA722118B6A7FD0017336C /* KawaSample.xml in Resources */,
 				18CD62FF17E24F17006154DF /* Line.vertsh in Resources */,
 				18D1687518157802004D017D /* icon_camera@2x.png in Resources */,
 				18CD630117E2501D006154DF /* Line.fragsh in Resources */,
@@ -770,6 +777,7 @@
 				18E04A1C17ECA83F00A11459 /* app_icon_iPad@2x.png in Resources */,
 				18D1687018157802004D017D /* button_main.png in Resources */,
 				18E04A1D17ECA83F00A11459 /* app_icon_iPhone.png in Resources */,
+				30AA722018B6A7FD0017336C /* KawaSample.dat in Resources */,
 				18E04A1E17ECA83F00A11459 /* app_icon_iPhone@2x.png in Resources */,
 				18E04A2517ECA85100A11459 /* Default-Portrait@2x~ipad.png in Resources */,
 				18D1687118157802004D017D /* button_main@2x.png in Resources */,

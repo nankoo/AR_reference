@@ -15,7 +15,10 @@
 
 @end
 
-@implementation ImageTargetsViewController
+@implementation ImageTargetsViewController{
+    
+    UIView *hoge;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -106,10 +109,20 @@
 }
 
 
+
+/////////////////////////////////////
+
 - (void)viewDidLoad
 {
     NSLog(@"番号17");
     [super viewDidLoad];
+    
+    
+    UIScreen* screen = [UIScreen mainScreen];
+    hoge = [[UIView alloc] initWithFrame:CGRectMake(0.0,0.0,screen.bounds.size.width,screen.bounds.size.height)];
+    hoge.backgroundColor =  [UIColor whiteColor];
+    [self.view addSubview:hoge];
+    
     
     /////////////////お遊びサンプル////////////////
     UIAlertView *alert =
@@ -121,6 +134,17 @@
     
     /////////////////////////////////
     
+    
+//    /////////////////お遊びサンプル////////////////
+//    UIAlertView *alert =
+//    [[UIAlertView alloc] initWithTitle:@"お知らせ" message:@"完了しました"
+//                              delegate:self cancelButtonTitle:@"確認" otherButtonTitles:nil];
+//    [alert show];
+//    
+//    
+//    
+//    /////////////////////////////////
+    
     [self prepareMenu];
 
 	// Do any additional setup after loading the view.
@@ -129,6 +153,16 @@
     
     NSLog(@"self.navigationController.navigationBarHidden:%d",self.navigationController.navigationBarHidden);
 }
+
+
+-(void)alertView:(UIAlertView*)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    hoge.hidden = YES;
+    
+}
+//////////////////////////
+
 
 - (void)viewWillDisappear:(BOOL)animated {
     NSLog(@"番号18");
@@ -212,8 +246,10 @@
     //トラッカーを読み込む？
     //SDKでvuforiaにデータを送って処理しているからアプリ内のデータは消しても問題無し？
     NSLog(@"番号25");
-    dataSetStonesAndChips = [self loadImageTrackerDataSet:@"StonesAndChips.xml"];
-    //dataSetStonesAndChips = [self loadImageTrackerDataSet:@"AndChips.xml"];
+    //ここのトラッカーだけ変更すると起動しなくなる
+    //トラッカーを変更する為には、まずvuforia上で画像のトラッカー申請を行い、番号25にxml形式で記載。その後プロジェクト内にも、xml/datの形で追加すると作業完了。
+    //dataSetStonesAndChips = [self loadImageTrackerDataSet:@"StonesAndChips.xml"];
+    dataSetStonesAndChips = [self loadImageTrackerDataSet:@"KawaSample.xml"];
     dataSetTarmac = [self loadImageTrackerDataSet:@"Tarmac.xml"];
     if ((dataSetStonesAndChips == NULL) || (dataSetTarmac == NULL)) {
         
@@ -248,8 +284,11 @@
 // callback: the AR initialization is done
 - (void) onInitARDone:(NSError *)initError {
     NSLog(@"番号27");
+    //下記コード１行はインディケータのため
     [self hideLoadingAnimation];
     
+    //プロジェクトにxml/dat形式でデータを追加すると、トラッカーとして判定されるようになった。
+    //つまりトラッカー画像とコンテンツオブジェクトの結びつけはアプリ内で行われている（断定）
     if (initError == nil) {
         NSLog(@"番号27a");
         NSError * error = nil;
