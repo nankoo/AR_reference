@@ -112,6 +112,7 @@
 		18FBCF1517EA5EC800FDF286 /* TextureTransparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FBCF1117EA5EC800FDF286 /* TextureTransparent.png */; };
 		30AA722018B6A7FD0017336C /* KawaSample.dat in Resources */ = {isa = PBXBuildFile; fileRef = 30AA721E18B6A7FD0017336C /* KawaSample.dat */; };
 		30AA722118B6A7FD0017336C /* KawaSample.xml in Resources */ = {isa = PBXBuildFile; fileRef = 30AA721F18B6A7FD0017336C /* KawaSample.xml */; };
+		30AA722518B6B8720017336C /* cube.png in Resources */ = {isa = PBXBuildFile; fileRef = 30AA722418B6B8720017336C /* cube.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -266,6 +267,8 @@
 		18FBCF1617EA635400FDF286 /* SoccerballSphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoccerballSphere.h; sourceTree = "<group>"; };
 		30AA721E18B6A7FD0017336C /* KawaSample.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = KawaSample.dat; sourceTree = "<group>"; };
 		30AA721F18B6A7FD0017336C /* KawaSample.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = KawaSample.xml; sourceTree = "<group>"; };
+		30AA722218B6B81D0017336C /* Cube.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
+		30AA722418B6B8720017336C /* cube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cube.png; path = ../../Classes/apps/ImageTargets/cube.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -485,6 +488,7 @@
 				1868D20717BD8EBE00E47566 /* Texture.h */,
 				1868D20817BD8EBE00E47566 /* Texture.mm */,
 				1868D20617BD8EBE00E47566 /* Teapot.h */,
+				30AA722218B6B81D0017336C /* Cube.h */,
 				188AD58C17DE3C02008BE2C8 /* Quad.h */,
 				18F23EBF180872D40038252A /* SampleApplication3DModel.h */,
 				18F23EC0180872D40038252A /* SampleApplication3DModel.m */,
@@ -518,6 +522,7 @@
 				188BB42917BD98D60080509A /* TextureTeapotGreen.png */,
 				188BB42A17BD98D60080509A /* TextureTeapotRed.png */,
 				188BB42B17BD98D60080509A /* TextureTeapotYellow.png */,
+				30AA722418B6B8720017336C /* cube.png */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -755,6 +760,7 @@
 				18CD630317E25274006154DF /* Simple.fragsh in Resources */,
 				18CD630517E25297006154DF /* Simple.vertsh in Resources */,
 				1894FD28180749AC009515BD /* UD_about.html in Resources */,
+				30AA722518B6B8720017336C /* cube.png in Resources */,
 				18FBCF1217EA5EC800FDF286 /* sodacan.dat in Resources */,
 				18FBCF1317EA5EC800FDF286 /* sodacan.xml in Resources */,
 				18FBCF1417EA5EC800FDF286 /* TextureSoccerBall.png in Resources */,

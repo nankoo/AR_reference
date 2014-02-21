@@ -19,7 +19,7 @@
 #import "Texture.h"
 #import "SampleApplicationUtils.h"
 #import "SampleApplicationShaderUtils.h"
-#import "Teapot.h"
+#import "Cube.h"
 
 
 //******************************************************************************
@@ -27,9 +27,14 @@
 //
 // OpenGL ES on iOS is not thread safe.  We ensure thread safety by following
 // this procedure:
+
 // 1) Create the OpenGL ES context on the main thread.
+//まずopenglのコードを書く
+
 // 2) Start the QCAR camera, which causes QCAR to locate our EAGLView and start
 //    the render thread.
+//qcarのカメラを起動。
+
 // 3) QCAR calls our renderFrameQCAR method periodically on the render thread.
 //    The first time this happens, the defaultFramebuffer does not exist, so it
 //    is created with a call to createFramebuffer.  createFramebuffer is called
@@ -45,15 +50,18 @@ namespace {
     // --- Data private to this unit ---
 
     // Teapot texture filenames
+    //const：定数にする
     const char* textureFilenames[] = {
+        
+        "cube.png",
         "TextureTeapotBrass.png",
-        "TextureTeapotBlue.png",
+        //"TextureTeapotBlue.png",
         "TextureTeapotRed.png",
         "building_texture.jpeg"
     };
     
     // Model scale factor
-    const float kObjectScaleNormal = 3.0f;
+    const float kObjectScaleNormal = 50.0f;
     const float kObjectScaleOffTargetTracking = 12.0f;
     
 }
@@ -61,11 +69,12 @@ namespace {
 
 @interface ImageTargetsEAGLView (PrivateMethods)
 
-- (void)initShaders;
-- (void)createFramebuffer;
-- (void)deleteFramebuffer;
-- (void)setFramebuffer;
-- (BOOL)presentFramebuffer;
+//レイアウト関連のメソッド
+- (void)initShaders;//陰影処理？
+- (void)createFramebuffer;//フレームバッファの作成
+- (void)deleteFramebuffer;//フレームバッファの破棄
+- (void)setFramebuffer;//フレームバッファの指定
+- (BOOL)presentFramebuffer;//現在のフレームバッファ？
 
 @end
 
@@ -92,7 +101,9 @@ namespace {
     if (self) {
         
         NSLog(@"番号2a");
+        //vapp:SampleApplicationSessionの変数
         vapp = app;
+        //レティーナだったら画像処理変えますよ的な？
         // Enable retina mode if available on this device
         if (YES == [vapp isRetinaDisplay]) {
             NSLog(@"番号2aa");
@@ -100,11 +111,13 @@ namespace {
         }
         
         // Load the augmentation textures
+        //オブジェクトをtextureの形にまとめるというコード？
         for (int i = 0; i < NUM_AUGMENTATION_TEXTURES; ++i) {
             augmentationTexture[i] = [[Texture alloc] initWithImageFile:[NSString stringWithCString:textureFilenames[i] encoding:NSASCIIStringEncoding]];
         }
 
         // Create the OpenGL ES context
+        //initWithAPI:APIから生成
         context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
         
         // The EAGLContext must be set for each thread that wishes to use it.
@@ -191,6 +204,8 @@ namespace {
     
     NSLog(@"番号7");
     //おそらくqualcom関連のコード
+    //buildingsってtextコードからSampleApplication3DModelを読み込む
+    //buildingsにcubeのデータが入っているのか確認
     buildingModel = [[SampleApplication3DModel alloc] initWithTxtResourceName:@"buildings"];
     [buildingModel read];
 }
@@ -207,7 +222,9 @@ namespace {
 // *** QCAR will call this method periodically on a background thread ***
 - (void)renderFrameQCAR
 {
+    
     NSLog(@"番号8");
+    //framebufferを作る
     [self setFramebuffer];
     
     // Clear colour and depth buffers
@@ -246,6 +263,7 @@ namespace {
         // OpenGL 2
         QCAR::Matrix44F modelViewProjection;
         
+        //offTargetTrackingEnabled:ターゲットトラッキングが完了した後は？、、、的な？
         if (offTargetTrackingEnabled) {
             NSLog(@"番号8a2a");
             SampleApplicationUtils::rotatePoseMatrix(90, 1, 0, 0,&modelViewMatrix.data[0]);
@@ -258,6 +276,7 @@ namespace {
         
         SampleApplicationUtils::multiplyMatrix(&vapp.projectionMatrix.data[0], &modelViewMatrix.data[0], &modelViewProjection.data[0]);
         
+        //
         glUseProgram(shaderProgramID);
         
         if (offTargetTrackingEnabled) {
@@ -268,9 +287,9 @@ namespace {
             glVertexAttribPointer(textureCoordHandle, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)buildingModel.texCoords);
         } else {
             NSLog(@"番号8b3b");
-            glVertexAttribPointer(vertexHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)teapotVertices);
-            glVertexAttribPointer(normalHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)teapotNormals);
-            glVertexAttribPointer(textureCoordHandle, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)teapotTexCoords);
+            glVertexAttribPointer(vertexHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)cubeVertices);
+            glVertexAttribPointer(normalHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)cubeNormals);
+            glVertexAttribPointer(textureCoordHandle, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)cubeTexCoords);
         }
         
         glEnableVertexAttribArray(vertexHandle);
@@ -298,10 +317,19 @@ namespace {
         
         if (offTargetTrackingEnabled) {
             NSLog(@"番号8a5a");
+            //buildingModel.numVertices：buildingmodelの頂点の数を返す？
             glDrawArrays(GL_TRIANGLES, 0, buildingModel.numVertices);
         } else {
             NSLog(@"番号8b5b");
-            glDrawElements(GL_TRIANGLES, NUM_TEAPOT_OBJECT_INDEX, GL_UNSIGNED_SHORT, (const GLvoid*)teapotIndices);
+            
+            //glDrawArrays(GL_TRIANGLES, 0, .numVertices);
+            //(GL_TRIANGLES, cubeNumVerts, GL_UNSIGNED_SHORT, (const GLvoid*)cubeNumVerts);
+            
+             //glDrawElements(GL_TRIANGLES, NUM_TEAPOT_OBJECT_INDEX, GL_UNSIGNED_SHORT, (const GLvoid*)teapotIndices);
+            
+            //ここはcube.hファイル内に記載されている数値と書き換える
+            glDrawElements(GL_TRIANGLES, NUM_CUBE_INDEX, GL_UNSIGNED_SHORT, (const GLvoid*)cubeIndices);
+            
         }
         
         SampleApplicationUtils::checkGlError("EAGLView renderFrameQCAR");
@@ -326,11 +354,13 @@ namespace {
 {
     NSLog(@"番号9");
     //opengl関連
+    //SampleApplicationShaderUtils createProgramWithVertexShaderFileNameってなに？？
     shaderProgramID = [SampleApplicationShaderUtils createProgramWithVertexShaderFileName:@"Simple.vertsh"
                                                    fragmentShaderFileName:@"Simple.fragsh"];
 
     if (0 < shaderProgramID) {
         NSLog(@"番号9a");
+        //レイアウトに関するコード
         vertexHandle = glGetAttribLocation(shaderProgramID, "vertexPosition");
         normalHandle = glGetAttribLocation(shaderProgramID, "vertexNormal");
         textureCoordHandle = glGetAttribLocation(shaderProgramID, "vertexTexCoord");
@@ -344,6 +374,7 @@ namespace {
 }
 
 
+//レイアウト関連①
 - (void)createFramebuffer
 {
     NSLog(@"番号10");
@@ -379,6 +410,7 @@ namespace {
 }
 
 
+//レイアウト関連②
 - (void)deleteFramebuffer
 {
     NSLog(@"番号11");
@@ -407,6 +439,7 @@ namespace {
 }
 
 
+//レイアウト関連③
 - (void)setFramebuffer
 {
     NSLog(@"番号12");
@@ -429,6 +462,7 @@ namespace {
 }
 
 
+//レイアウト関連④
 - (BOOL)presentFramebuffer
 {
     NSLog(@"番号13");

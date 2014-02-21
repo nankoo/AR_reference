@@ -12,7 +12,8 @@
 #import "SampleApplication3DModel.h"
 
 
-#define NUM_AUGMENTATION_TEXTURES 4
+#define NUM_AUGMENTATION_TEXTURES 2
+#define cubeNumVerts
 
 
 // EAGLView is a subclass of UIView and conforms to the informal protocol
@@ -38,6 +39,7 @@
     
     // Texture used when rendering augmentation
     //augmentation；増加物？
+    //textureは画像オブジェクトの可能性高し
     Texture* augmentationTexture[NUM_AUGMENTATION_TEXTURES];
     
     BOOL offTargetTrackingEnabled;
