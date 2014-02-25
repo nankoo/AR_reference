@@ -329,6 +329,7 @@ namespace {
             
             //ここはcube.hファイル内に記載されている数値と書き換える
             glDrawElements(GL_TRIANGLES, NUM_CUBE_INDEX, GL_UNSIGNED_SHORT, (const GLvoid*)cubeIndices);
+            //glDrawArrays(GL_TRIANGLES, NUM_CUBE_INDEX, GL_UNSIGNED_SHORT);
             
         }
         
