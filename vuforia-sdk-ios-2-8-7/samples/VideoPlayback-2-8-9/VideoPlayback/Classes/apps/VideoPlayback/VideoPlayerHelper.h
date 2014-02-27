@@ -2,6 +2,10 @@
  Copyright (c) 2012-2013 Qualcomm Connected Experiences, Inc.
  All Rights Reserved.
  ==============================================================================*/
+//videoplayerhelper.h
+
+//mediastateの状態を、このファイル内でAVPlayerItemStatusによって指定
+
 
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -14,6 +18,7 @@
 @class VideoPlaybackViewController;
 
 // Media states
+//動画の状態を数字（index）で表す
 typedef enum tagMEDIA_STATE {
     REACHED_END,
     PAUSED,

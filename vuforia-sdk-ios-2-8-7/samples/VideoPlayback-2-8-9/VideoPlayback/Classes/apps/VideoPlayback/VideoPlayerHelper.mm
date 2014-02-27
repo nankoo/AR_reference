@@ -69,6 +69,7 @@ static NSString* const kRateKey = @"rate";
 
 - (id)init
 {
+    NSLog(@"番号50");
     self = [super init];
     
     if (nil != self) {
@@ -81,6 +82,7 @@ static NSString* const kRateKey = @"rate";
 
 - (void)dealloc
 {
+    NSLog(@"番号51");
     [_moviePlayer release];
     
     [super dealloc];
@@ -89,6 +91,7 @@ static NSString* const kRateKey = @"rate";
 
 - (void)loadView
 {
+    NSLog(@"番号52");
     [self setView:_moviePlayer.view];
 }
 
@@ -97,6 +100,7 @@ static NSString* const kRateKey = @"rate";
 #pragma mark - Autorotation
 - (NSUInteger)supportedInterfaceOrientations
 {
+    NSLog(@"番号53");
     // iOS >= 6
     return UIInterfaceOrientationMaskAll;
 }
@@ -104,6 +108,7 @@ static NSString* const kRateKey = @"rate";
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    NSLog(@"番号54");
     // iOS < 6
     return YES;
 }
@@ -120,9 +125,11 @@ static NSString* const kRateKey = @"rate";
 #pragma mark - Lifecycle
 - (id)initWithRootViewController:(VideoPlaybackViewController *) viewController
 {
+    NSLog(@"番号55");
     self = [super init];
     
     if (nil != self) {
+        NSLog(@"番号55a");
         // Set up app's audio session
         rootViewController = viewController;
 
@@ -156,6 +163,7 @@ static NSString* const kRateKey = @"rate";
 
 - (void)dealloc
 {
+    NSLog(@"番号56");
     // Stop playback
     (void)[self stop];
     [self resetData];
@@ -170,28 +178,34 @@ static NSString* const kRateKey = @"rate";
 // Load a movie
 - (BOOL)load:(NSString*)filename playImmediately:(BOOL)playOnTextureImmediately fromPosition:(float)seekPosition
 {
+    NSLog(@"番号57");
 //    (void)AudioSessionSetActive(true);
     BOOL ret = NO;
     
     // Load only if there is no media currently loaded
     if (NOT_READY != mediaState && ERROR != mediaState) {
+        NSLog(@"番号57a");
         NSLog(@"Media already loaded.  Unload current media first.");
     }
     else {
+        NSLog(@"番号57b");
         // ----- Info: additional player threads not running at this point -----
         
         // Determine the type of file that has been requested (simply checking
         // for the presence of a "://" in filename for remote files)
         if (NSNotFound == [filename rangeOfString:@"://"].location) {
+            NSLog(@"番号57ba");
             // For on texture rendering, we need a local file
             localFile = YES;
             NSString* fullPath = nil;
             
             // If filename is an absolute path (starts with a '/'), use it as is
             if (0 == [filename rangeOfString:@"/"].location) {
+                NSLog(@"番号57baa");
                 fullPath = [NSString stringWithString:filename];
             }
             else {
+                NSLog(@"番号57bab");
                 // filename is a relative path, play media from this app's
                 // resources folder
                 fullPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:filename];
@@ -200,10 +214,12 @@ static NSString* const kRateKey = @"rate";
             mediaURL = [[NSURL alloc] initFileURLWithPath:fullPath];
             
             if (YES == playOnTextureImmediately) {
+                NSLog(@"番号57bac");
                 playImmediately = playOnTextureImmediately;
             }
             
             if (0.0f <= seekPosition) {
+                NSLog(@"番号5bad");
                 // If a valid position has been requested, update the player
                 // cursor, which will allow playback to begin from the
                 // correct position
@@ -213,6 +229,7 @@ static NSString* const kRateKey = @"rate";
             ret = [self loadLocalMediaFromURL:mediaURL];
         }
         else {
+            NSLog(@"番号57bb");
             // FULLSCREEN only
             localFile = NO;
             
@@ -227,6 +244,7 @@ static NSString* const kRateKey = @"rate";
     }
     
     if (NO == ret) {
+        NSLog(@"番号57c");
         // Some error occurred
         mediaState = ERROR;
     }
@@ -238,6 +256,7 @@ static NSString* const kRateKey = @"rate";
 // Unload the movie
 - (BOOL)unload
 {
+    NSLog(@"番号58");
 //    (void)AudioSessionSetActive(false);
     
     // Stop playback
@@ -251,6 +270,7 @@ static NSString* const kRateKey = @"rate";
 // Indicates whether the movie is playable on texture
 - (BOOL)isPlayableOnTexture
 {
+    NSLog(@"番号59");
     // We can render local files on texture
     return localFile;
 }
@@ -259,14 +279,19 @@ static NSString* const kRateKey = @"rate";
 // Indicates whether the movie is playable in fullscreen mode
 - (BOOL)isPlayableFullscreen
 {
+    NSLog(@"番号60");
     // We can play both local and remote files in fullscreen mode
     return YES;
 }
 
 
 // Get the current player state
+//動画の状態を把握する
 - (MEDIA_STATE)getStatus
 {
+    NSLog(@"番号61");
+    
+    //videoplayerhelper.hにあるファイル
     return mediaState;
 }
 
@@ -274,18 +299,23 @@ static NSString* const kRateKey = @"rate";
 // Get the height of the video (on-texture player only)
 - (int)getVideoHeight
 {
+    NSLog(@"番号62");
     int ret = -1;
     
     // Return information only for local files
     if ([self isPlayableOnTexture]) {
+        NSLog(@"番号62a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号62aa");
             ret = videoSize.height;
         }
         else {
+            NSLog(@"番号62ab");
             NSLog(@"Video height not available in current state");
         }
     }
     else {
+        NSLog(@"番号62b");
         NSLog(@"Video height available only for video that is playable on texture");
     }
     
@@ -296,18 +326,23 @@ static NSString* const kRateKey = @"rate";
 // Get the width of the video (on-texture player only)
 - (int)getVideoWidth
 {
+    NSLog(@"番号63");
     int ret = -1;
     
     // Return information only for local files
     if ([self isPlayableOnTexture]) {
+        NSLog(@"番号63a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号63aa");
             ret = videoSize.width;
         }
         else {
+            NSLog(@"番号63ab");
             NSLog(@"Video width not available in current state");
         }
     }
     else {
+        NSLog(@"番号63b");
         NSLog(@"Video width available only for video that is playable on texture");
     }
     
@@ -318,18 +353,23 @@ static NSString* const kRateKey = @"rate";
 // Get the length of the media (on-texture player only)
 - (float)getLength
 {
+    NSLog(@"番号64");
     float ret = -1.0f;
     
     // Return information only for local files
     if ([self isPlayableOnTexture]) {
+        NSLog(@"番号64a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号64aa");
             ret = (float)videoLengthSeconds;
         }
         else {
+            NSLog(@"番号64ab");
             NSLog(@"Video length not available in current state");
         }
     }
     else {
+        NSLog(@"番号64b");
         NSLog(@"Video length available only for video that is playable on texture");
     }
     
@@ -340,6 +380,7 @@ static NSString* const kRateKey = @"rate";
 // Play the asset
 - (BOOL)play:(BOOL)fullscreen fromPosition:(float)seekPosition
 {
+    NSLog(@"番号65");
     BOOL ret = NO;
     
     int requestedPlayerType = YES == fullscreen ? PLAYER_TYPE_NATIVE : PLAYER_TYPE_ON_TEXTURE;
@@ -347,10 +388,13 @@ static NSString* const kRateKey = @"rate";
     // If switching player type or not currently playing, and not in an unknown
     // or error state
     if ((PLAYING != mediaState || playerType != requestedPlayerType) && NOT_READY > mediaState) {
+        NSLog(@"番号65a");
         if (PLAYER_TYPE_NATIVE == requestedPlayerType) {
+            NSLog(@"番号65aa");
             BOOL playingOnTexture = NO;
             
             if (PLAYING == mediaState) {
+                NSLog(@"番号65aaa");
                 // Pause the on-texture player
                 [self pause];
                 playingOnTexture = YES;
@@ -379,12 +423,14 @@ static NSString* const kRateKey = @"rate";
                                                        object:movieViewController.moviePlayer];
             
             if (YES == localFile) {
+                NSLog(@"番号65aab");
                 // Playback state will reflect the current on-texture playback
                 // state (playback will be started, if required, when the media
                 // has loaded)
                 [movieViewController.moviePlayer setShouldAutoplay:NO];
                 
                 if (0.0f <= seekPosition) {
+                    NSLog(@"番号65aaba");
                     // If a valid position has been requested, update the player
                     // cursor, which will allow playback to begin from the
                     // correct position (it will be set when the media has
@@ -393,12 +439,14 @@ static NSString* const kRateKey = @"rate";
                 }
                 
                 if (YES == playingOnTexture) {
+                    NSLog(@"番号65aabb");
                     // Store the fact that video was playing on texture when
                     // fullscreen playback was requested
                     resumeOnTexturePlayback = YES;
                 }
             }
             else {
+                NSLog(@"番号65aabb");
                 // Always start playback of remote files from the beginning
                 [self updatePlayerCursorPosition:PLAYER_CURSOR_POSITION_MEDIA_START];
                 
@@ -419,6 +467,7 @@ static NSString* const kRateKey = @"rate";
         }
         // On texture playback available only for local files
         else if (YES == localFile) {
+            NSLog(@"番号65ab");
             // ----- Info: additional player threads not running at this point -----
             
             // Seek to the current playback cursor time (this causes the start
@@ -427,6 +476,7 @@ static NSString* const kRateKey = @"rate";
             seekRequested = YES;
             
             if (0.0f <= seekPosition) {
+                NSLog(@"番号65aba");
                 // If a valid position has been requested, update the player
                 // cursor, which will allow playback to begin from the
                 // correct position
@@ -436,11 +486,13 @@ static NSString* const kRateKey = @"rate";
             mediaState = PLAYING;
             
             if (YES == playVideo) {
+                NSLog(@"番号65abb");
                 // Start a timer to drive the frame pump (on a background
                 // thread)
                 [self performSelectorInBackground:@selector(createFrameTimer) withObject:nil];
             }
             else {
+                NSLog(@"番号65abc");
                 // The asset contains no video.  Play the audio
                 [player play];
             }
@@ -450,6 +502,7 @@ static NSString* const kRateKey = @"rate";
     }
     
     if (YES == ret) {
+        NSLog(@"番号65b");
         playerType = (enum tagPLAYER_TYPE)requestedPlayerType;
     }
     
@@ -462,16 +515,20 @@ static NSString* const kRateKey = @"rate";
 // Pause playback (on-texture player only)
 - (BOOL)pause
 {
+    NSLog(@"番号66");
     BOOL ret = NO;
     
     // Control available only when playing on texture (not the native player)
     if (PLAYING == mediaState) {
+        NSLog(@"番号66a");
         if (PLAYER_TYPE_ON_TEXTURE == playerType) {
+            NSLog(@"番号66aa");
             [dataLock lock];
             mediaState = PAUSED;
             
             // Stop the audio (if there is any)
             if (YES == playAudio) {
+                NSLog(@"番号66aaa");
                 [player pause];
             }
             
@@ -482,6 +539,7 @@ static NSString* const kRateKey = @"rate";
             ret = YES;
         }
         else {
+            NSLog(@"番号66ab");
             NSLog(@"Pause control available only when playing video on texture");
         }
     }
@@ -493,16 +551,21 @@ static NSString* const kRateKey = @"rate";
 // Stop playback (on-texture player only)
 - (BOOL)stop
 {
+    NSLog(@"番号67");
     BOOL ret = NO;
     
     // Control available only when playing on texture (not the native player)
     if (PLAYING == mediaState) {
+        NSLog(@"番号67a");
         if (PLAYER_TYPE_ON_TEXTURE == playerType) {
+            NSLog(@"番号67aa");
             [dataLock lock];
+//            //このdatalockは何のため？
             mediaState = STOPPED;
             
             // Stop the audio (if there is any)
             if (YES == playAudio) {
+                NSLog(@"番号67aaa");
                 [player pause];
             }
             
@@ -516,9 +579,11 @@ static NSString* const kRateKey = @"rate";
             ret = YES;
         }
         else {
+            NSLog(@"番号67ab");
             NSLog(@"Stop control available only when playing video on texture");
         }
     } else if (PLAYING_FULLSCREEN == mediaState) {
+        NSLog(@"番号67b");
         // Stop receiving notifications
         [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:movieViewController.moviePlayer];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:movieViewController.moviePlayer];
@@ -541,12 +606,16 @@ static NSString* const kRateKey = @"rate";
 // Seek to a particular playback cursor position (on-texture player only)
 - (BOOL)seekTo:(float)position
 {
+    NSLog(@"番号68");
     BOOL ret = NO;
     
     // Control available only when playing on texture (not the native player)
     if (PLAYER_TYPE_ON_TEXTURE == playerType) {
+        NSLog(@"番号68a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号68aa");
             if (position < videoLengthSeconds) {
+                NSLog(@"番号68aaa");
                 // Set the new time (the actual seek occurs in getNextVideoFrame)
                 [dataLock lock];
                 [self updatePlayerCursorPosition:position];
@@ -555,14 +624,17 @@ static NSString* const kRateKey = @"rate";
                 ret = YES;
             }
             else {
+                NSLog(@"番号68aab");
                 NSLog(@"Requested seek position greater than video length");
             }
         }
         else {
+            NSLog(@"番号68ab");
             NSLog(@"Seek control not available in current state");
         }
     }
     else {
+        NSLog(@"番号68b");
         NSLog(@"Seek control available only when playing video on texture");
     }
     
@@ -573,20 +645,25 @@ static NSString* const kRateKey = @"rate";
 // Get the current playback cursor position (on-texture player only)
 - (float)getCurrentPosition
 {
+    NSLog(@"番号69");
     float ret = -1.0f;
     
     // Return information only when playing on texture (not the native player)
     if (PLAYER_TYPE_ON_TEXTURE == playerType) {
+        NSLog(@"番号69a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号69aa");
             [dataLock lock];
             ret = (float)playerCursorPosition;
             [dataLock unlock];
         }
         else {
+            NSLog(@"番号69ab");
             NSLog(@"Current playback position not available in current state");
         }
     }
     else {
+        NSLog(@"番号69b");
         NSLog(@"Current playback position available only when playing video on texture");
     }
     
@@ -597,20 +674,25 @@ static NSString* const kRateKey = @"rate";
 // Set the volume level (on-texture player only)
 - (BOOL)setVolume:(float)volume
 {
+    NSLog(@"番号70");
     BOOL ret = NO;
     
     // Control available only when playing on texture (not the native player)
     if (PLAYER_TYPE_ON_TEXTURE == playerType) {
+        NSLog(@"番号70a");
         if (NOT_READY > mediaState) {
+            NSLog(@"番号70aa");
             [dataLock lock];
             ret = [self setVolumeLevel:volume];
             [dataLock unlock];
         }
         else {
+            NSLog(@"番号70ab");
             NSLog(@"Volume control not available in current state");
         }
     }
     else {
+        NSLog(@"番号70b");
         NSLog(@"Volume control available only when playing video on texture");
     }
     
@@ -621,10 +703,12 @@ static NSString* const kRateKey = @"rate";
 // Update the OpenGL video texture with the latest available video data
 - (GLuint)updateVideoData
 {
+    NSLog(@"番号71");
     GLuint textureID = 0;
     
     // If currently playing on texture
     if (PLAYING == mediaState && PLAYER_TYPE_ON_TEXTURE == playerType) {
+        NSLog(@"番号71a");
         [latestSampleBufferLock lock];
         
         unsigned char* pixelBufferBaseAddress = NULL;
@@ -632,11 +716,13 @@ static NSString* const kRateKey = @"rate";
         
         // If we have a valid buffer, lock the base address of its pixel buffer
         if (NULL != latestSampleBuffer) {
+            NSLog(@"番号71aa");
             pixelBuffer = CMSampleBufferGetImageBuffer(latestSampleBuffer);
             CVPixelBufferLockBaseAddress(pixelBuffer, 0);
             pixelBufferBaseAddress = (unsigned char*)CVPixelBufferGetBaseAddress(pixelBuffer);
         }
         else {
+            NSLog(@"番号71ab");
             // No video sample buffer available: we may have been asked to
             // provide one before any are available, or we may have read all
             // available frames
@@ -644,8 +730,10 @@ static NSString* const kRateKey = @"rate";
         }
         
         if (NULL != pixelBufferBaseAddress) {
+            NSLog(@"番号71ac");
             // If we haven't created the video texture, do so now
             if (0 == videoTextureHandle) {
+                NSLog(@"番号71aca");
                 videoTextureHandle = [self createVideoTexture];
             }
             
@@ -653,10 +741,12 @@ static NSString* const kRateKey = @"rate";
             const size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);
             
             if (bytesPerRow / BYTES_PER_TEXEL == videoSize.width) {
+                NSLog(@"番号71acb");
                 // No padding between lines of decoded video
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoSize.width, videoSize.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixelBufferBaseAddress);
             }
             else {
+                NSLog(@"番号71acc");
                 // Decoded video contains padding between lines.  We must not
                 // upload it to graphics memory as we do not want to display it
                 
@@ -694,15 +784,23 @@ static NSString* const kRateKey = @"rate";
                         change:(NSDictionary*)change 
                        context:(void*)context
 {
+    NSLog(@"番号72");
     if (AVPlayerItemStatusObservationContext == context) {
+        NSLog(@"番号72a");
+        //videoplayethelper内での、動画のステータス状態
+        //valueを語尾につけると変数の型が変わるものが多い
         AVPlayerItemStatus status = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
         
+        //AVPlayerItemStatus[status]は下記swith文によって分岐
         switch (status) {
+                NSLog(@"番号70:switch");
             case AVPlayerItemStatusUnknown:
+                NSLog(@"番号70:switch;AVPlayerItemStatusUnknown");
                 DEBUGLOG(@"AVPlayerItemStatusObservationContext -> AVPlayerItemStatusUnknown");
                 mediaState = NOT_READY;
                 break;
             case AVPlayerItemStatusReadyToPlay:
+                NSLog(@"番号70:switch:AVPlayerItemStatusReadyToPlay");
                 DEBUGLOG(@"AVPlayerItemStatusObservationContext -> AVPlayerItemStatusReadyToPlay");
                 mediaState = READY;
                 
@@ -714,17 +812,20 @@ static NSString* const kRateKey = @"rate";
                 
                 break;
             case AVPlayerItemStatusFailed:
+                NSLog(@"番号70:switch:AVPlayerItemStatusFailed");
                 DEBUGLOG(@"AVPlayerItemStatusObservationContext -> AVPlayerItemStatusFailed");
                 NSLog(@"Error - AVPlayer unable to play media: %@", [[[player currentItem] error] localizedDescription]);
                 mediaState = ERROR;
                 break;
             default:
+                NSLog(@"番号70:switch;last");
                 DEBUGLOG(@"AVPlayerItemStatusObservationContext -> Unknown");
                 mediaState = NOT_READY;
                 break;
         }
     }
     else if (AVPlayerRateObservationContext == context && NO == playVideo && PLAYING == mediaState) {
+        NSLog(@"番号72b");
         // We must detect the end of playback here when playing audio-only
         // media, because the video frame pump is not running (end of playback
         // is detected by the frame pump when playing video-only and audio/video
@@ -751,8 +852,10 @@ static NSString* const kRateKey = @"rate";
 // Called when the movie player's media load state changes
 - (void)moviePlayerLoadStateChanged:(NSNotification*)notification;
 {
+    NSLog(@"番号73");
     DEBUGLOG(@"moviePlayerLoadStateChanged");
     if (MPMovieLoadStatePlayable & [movieViewController.moviePlayer loadState]) {
+        NSLog(@"番号73a");
         // If the movie is playable, set the playback time to the current cursor
         // position (in case the on texture player is passing responsibility for
         // playing the current media to the native player) and start playback
@@ -764,6 +867,7 @@ static NSString* const kRateKey = @"rate";
         // If video was playing on texture before switching to fullscreen mode,
         // start playback
         if (YES == resumeOnTexturePlayback) {
+            NSLog(@"番号73aa");
             [movieViewController.moviePlayer play];
         }
     }
@@ -772,6 +876,7 @@ static NSString* const kRateKey = @"rate";
 // Called when the movie player's media playback ends
 - (void)moviePlayerPlaybackDidFinish:(NSNotification*)notification
 {
+    NSLog(@"番号74");
     DEBUGLOG(@"moviePlayerPlaybackDidFinish");
     // Determine the reason the playback finished
     NSDictionary* dict = [notification userInfo];
@@ -780,17 +885,22 @@ static NSString* const kRateKey = @"rate";
     CFTimeInterval cursorPosition = PLAYER_CURSOR_POSITION_MEDIA_START;
     
     switch ([reason intValue]) {
+            NSLog(@"番号74:switch:");
         case MPMovieFinishReasonPlaybackEnded:
+            NSLog(@"番号74:switch:MPMovieFinishReasonPlaybackEnded");
             DEBUGLOG(@"moviePlayerPlaybackDidFinish -> MPMovieFinishReasonPlaybackEnded");
             break;
         case MPMovieFinishReasonPlaybackError:
+            NSLog(@"番号74:switch:MPMovieFinishReasonPlaybackError");
             DEBUGLOG(@"moviePlayerPlaybackDidFinish -> MPMovieFinishReasonPlaybackError");
             break;
         case MPMovieFinishReasonUserExited:
+            NSLog(@"番号74:switch:MPMovieFinishReasonUserExited");
             DEBUGLOG(@"moviePlayerPlaybackDidFinish -> MPMovieFinishReasonUserExited");
             cursorPosition = [movieViewController.moviePlayer currentPlaybackTime];
             break;
         default:
+            NSLog(@"番号74:switch:moviePlayerPlaybackDidFinish -> Unknown");
             DEBUGLOG(@"moviePlayerPlaybackDidFinish -> Unknown");
             break;
     }
@@ -803,6 +913,7 @@ static NSString* const kRateKey = @"rate";
 
 - (void)moviePlayerDidExitFullscreen:(NSNotification*)notification
 {
+    NSLog(@"番号75");
     DEBUGLOG(@"moviePlayerDidExitFullscreen");
     [self moviePlayerExitAtPosition:[movieViewController.moviePlayer currentPlaybackTime]];
 }
@@ -810,6 +921,7 @@ static NSString* const kRateKey = @"rate";
 
 - (void)moviePlayerExitAtPosition:(NSTimeInterval)position
 {
+    NSLog(@"番号76");
 #ifdef DEBUG
     NSLog(@"moviePlayerExitAtPosition: %f", position);
 #endif
@@ -835,10 +947,12 @@ static NSString* const kRateKey = @"rate";
     // If video was playing on texture before switching to fullscreen mode,
     // restart playback
     if (YES == resumeOnTexturePlayback) {
+        NSLog(@"番号76a");
         resumeOnTexturePlayback = NO;
         [self play:NO fromPosition:VIDEO_PLAYBACK_CURRENT_POSITION];
     }
     else {
+        NSLog(@"番号76b");
         mediaState = PAUSED;
     }
 }
@@ -848,6 +962,7 @@ static NSString* const kRateKey = @"rate";
 #pragma mark - Private methods
 - (void)resetData
 {
+    NSLog(@"番号77");
     // ----- Info: additional player threads not running at this point -----
     
     // Reset media state and information
@@ -886,10 +1001,12 @@ static NSString* const kRateKey = @"rate";
 
 - (BOOL)loadLocalMediaFromURL:(NSURL*)url
 {
+    NSLog(@"番号78");
     BOOL ret = NO;
     asset = [[AVURLAsset alloc] initWithURL:url options:nil];
     
     if (nil != asset) {
+        NSLog(@"番号78a");
         // We can now attempt to load the media, so report success.  We will
         // discover if the load actually completes successfully when we are
         // called back by the system
@@ -905,6 +1022,7 @@ static NSString* const kRateKey = @"rate";
                                 AVKeyValueStatus status = [asset statusOfValueForKey:kTracksKey error:&error];
                                 
                                 if (status == AVKeyValueStatusLoaded) {
+                                    NSLog(@"番号78aa");
                                     // Asset loaded, retrieve info and prepare
                                     // for playback
                                     if (NO == [self prepareAssetForPlayback]) {
@@ -913,6 +1031,7 @@ static NSString* const kRateKey = @"rate";
                                     }
                                 }
                                 else {
+                                    NSLog(@"番号78ab");
                                     // Error
                                     NSLog(@"Error - The asset's tracks were not loaded: %@", [error localizedDescription]);
                                     mediaState = ERROR;
@@ -928,6 +1047,7 @@ static NSString* const kRateKey = @"rate";
 // Prepare the AVURLAsset for playback
 - (BOOL)prepareAssetForPlayback
 {
+    NSLog(@"番号79");
     // Get video properties
     videoSize = [asset naturalSize];
     videoLengthSeconds = CMTimeGetSeconds([asset duration]);
@@ -942,11 +1062,14 @@ static NSString* const kRateKey = @"rate";
     BOOL ret = [self prepareAssetForReading:playerCursorStartPosition];
     
     if (YES == ret) {
+        NSLog(@"番号79a");
         if (YES == playAudio) {
+            NSLog(@"番号79aa");
             // Prepare the AVPlayer to play the audio
             [self prepareAVPlayer];
         }
         else {
+            NSLog(@"番号79ab");
             // Inform our client that the asset is ready to play
             mediaState = READY;
         }
@@ -959,6 +1082,7 @@ static NSString* const kRateKey = @"rate";
 // Prepare the AVURLAsset for reading so we can obtain video frame data from it
 - (BOOL)prepareAssetForReading:(CMTime)startTime
 {
+    NSLog(@"番号80");
     BOOL ret = YES;
     NSError* error = nil;
     
@@ -967,6 +1091,7 @@ static NSString* const kRateKey = @"rate";
     AVAssetTrack* assetTrackVideo = nil;
     NSArray* arrayTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
     if (0 < [arrayTracks count]) {
+        NSLog(@"番号80a");
         playVideo = YES;
         assetTrackVideo = [arrayTracks objectAtIndex:0];
         videoFrameRate = [assetTrackVideo nominalFrameRate];
@@ -984,6 +1109,7 @@ static NSString* const kRateKey = @"rate";
         
         // Add the video output to the asset reader
         if ([assetReader canAddOutput:assetReaderTrackOutputVideo]) {
+            NSLog(@"番号80aa");
             [assetReader addOutput:assetReaderTrackOutputVideo];
         }
         
@@ -995,11 +1121,13 @@ static NSString* const kRateKey = @"rate";
         [assetReader startReading];
         
         if (AVAssetReaderStatusReading != [assetReader status]) {
+            NSLog(@"番号80ab");
             NSLog(@"Error - AVAssetReader not in reading state");
             ret = NO;
         }
     }
     else {
+        NSLog(@"番号80b");
         NSLog(@"***** No video tracks in asset *****");
     }
     
@@ -1007,6 +1135,7 @@ static NSString* const kRateKey = @"rate";
     // Get the first audio track
     arrayTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
     if (0 < [arrayTracks count]) {
+        NSLog(@"番号80c");
         playAudio = YES;
         AVAssetTrack* assetTrackAudio = [arrayTracks objectAtIndex:0];
         
@@ -1022,6 +1151,7 @@ static NSString* const kRateKey = @"rate";
         [item setAudioMix:audioMix];
     }
     else {
+        NSLog(@"番号80d");
         NSLog(@"***** No audio tracks in asset *****");
     }
     
@@ -1032,6 +1162,7 @@ static NSString* const kRateKey = @"rate";
 // Prepare the AVPlayer object for media playback
 - (void)prepareAVPlayer
 {
+    NSLog(@"番号81");
     // Create a player item
     AVPlayerItem* item = [AVPlayerItem playerItemWithAsset:asset];
     
@@ -1050,10 +1181,13 @@ static NSString* const kRateKey = @"rate";
 // Video frame pump timer callback
 - (void)frameTimerFired:(NSTimer*)timer;
 {
+    NSLog(@"番号82");
     if (NO == stopFrameTimer) {
+        NSLog(@"番号82a");
         [self getNextVideoFrame];
     }
     else {
+        NSLog(@"番号82b");
         // NSTimer invalidate must be called on the timer's thread
         [frameTimer invalidate];
     }
@@ -1064,10 +1198,12 @@ static NSString* const kRateKey = @"rate";
 // timer driving the frame pump will be accurate)
 - (void)getNextVideoFrame
 {
+    NSLog(@"番号83");
     // Synchronise access to publicly accessible internal data.  We use tryLock
     // here to prevent possible deadlock when pause or stop are called on
     // another thread
     if (NO == [dataLock tryLock]) {
+        NSLog(@"番号83a");
         return;
     }
     
@@ -1089,13 +1225,16 @@ static NSString* const kRateKey = @"rate";
         // state is SYNC_AHEAD.
         
         while (SYNC_READY != syncStatus) {
+            NSLog(@"番号83:while");
             Float64 delta;
             
             if (SYNC_AHEAD != syncStatus) {
+                NSLog(@"番号83:while:a");
                 currentSampleBuffer = [assetReaderTrackOutputVideo copyNextSampleBuffer];
             }
             
             if (NULL == currentSampleBuffer) {
+                NSLog(@"番号83:while:b");
                 // Failed to read the next sample buffer
                 break;
             }
@@ -1111,22 +1250,27 @@ static NSString* const kRateKey = @"rate";
             delta = CMTimeGetSeconds(caCurrentTime) - CMTimeGetSeconds(frameTimeStamp);
             
             if (delta < 0) {
+                NSLog(@"番号83:while:c");
                 delta *= -1;
                 syncStatus = SYNC_AHEAD;
             }
             else {
+                NSLog(@"番号83:while:d");
                 syncStatus = SYNC_BEHIND;
             }
             
             if (delta < 1 / videoFrameRate) {
+                NSLog(@"番号83:while:e");
                 // Video in sync with audio
                 syncStatus = SYNC_READY;
             }
             else if (SYNC_AHEAD == syncStatus) {
+                NSLog(@"番号83:while:f");
                 // Video ahead of audio: stay in SYNC_AHEAD state, exit loop
                 break;
             }
             else {
+                NSLog(@"番号83:while:g");
                 // Video behind audio (SYNC_BEHIND): stay in loop
                 CFRelease(currentSampleBuffer);
             }
@@ -1195,6 +1339,7 @@ static NSString* const kRateKey = @"rate";
 // Create a timer to drive the video frame pump
 - (void)createFrameTimer
 {
+    NSLog(@"番号84");
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     frameTimer = [[NSTimer scheduledTimerWithTimeInterval:(1 / videoFrameRate) target:self selector:@selector(frameTimerFired:) userInfo:nil repeats:YES] retain];
@@ -1212,6 +1357,7 @@ static NSString* const kRateKey = @"rate";
     [latestSampleBufferLock lock];
     
     if (NULL != latestSampleBuffer) {
+        NSLog(@"番号84a");
         // Release the latest sample buffer
         CFRelease(latestSampleBuffer);
         latestSampleBuffer = NULL;
@@ -1226,6 +1372,7 @@ static NSString* const kRateKey = @"rate";
 // Create an OpenGL texture for the video data
 - (GLuint)createVideoTexture
 {
+    NSLog(@"番号85");
 	GLuint handle;
 	glGenTextures(1, &handle);
 	glBindTexture(GL_TEXTURE_2D, handle);
@@ -1243,6 +1390,7 @@ static NSString* const kRateKey = @"rate";
 // [Always called with dataLock locked]
 - (void)updatePlayerCursorPosition:(float)position
 {
+    NSLog(@"番号86");
     // Set the player cursor position so the native player can restart from the
     // appropriate time if play (fullscreen) is called again
     playerCursorPosition = position;
@@ -1257,14 +1405,17 @@ static NSString* const kRateKey = @"rate";
 // [Always called with dataLock locked]
 - (BOOL)setVolumeLevel:(float)volume
 {
+    NSLog(@"番号87");
     BOOL ret = NO;
     NSArray* arrayTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
     
     if (0 < [arrayTracks count]) {
+        NSLog(@"番号87a");
         // Get the asset's audio track
         AVAssetTrack* assetTrackAudio = [arrayTracks objectAtIndex:0];
         
         if (nil != assetTrackAudio) {
+            NSLog(@"番号87aa");
             // Set up the audio mix
             AVMutableAudioMixInputParameters* audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
             [audioInputParams setVolume:volume atTime:playerCursorStartPosition];
@@ -1290,7 +1441,9 @@ static NSString* const kRateKey = @"rate";
 // [Always called with dataLock locked]
 - (void)doSeekAndPlayAudio
 {
+    NSLog(@"番号88");
     if (PLAYER_CURSOR_REQUEST_COMPLETE < requestedCursorPosition) {
+        NSLog(@"番号88a");
         // Store the cursor position from which playback will start
         playerCursorStartPosition = CMTimeMake(requestedCursorPosition * TIMESCALE, TIMESCALE);
         
@@ -1298,6 +1451,7 @@ static NSString* const kRateKey = @"rate";
         [self setVolumeLevel:currentVolume];
         
         if (YES == playAudio) {
+            NSLog(@"番号88aa");
             // Set AVPlayer cursor position (audio)
             [player seekToTime:playerCursorStartPosition];
         }
@@ -1310,6 +1464,7 @@ static NSString* const kRateKey = @"rate";
     }
     
     if (YES == playAudio) {
+        NSLog(@"番号88b");
         // Play the audio (if there is any)
         [player play];
     }
@@ -1322,10 +1477,12 @@ static NSString* const kRateKey = @"rate";
 // Request the frame timer to terminate and wait for its thread to end
 - (void)waitForFrameTimerThreadToEnd
 {
+    NSLog(@"番号89");
     stopFrameTimer = YES;
     
     // Wait for the frame pump thread to stop
     while (nil != frameTimer) {
+        NSLog(@"番号89:while");
         [NSThread sleepForTimeInterval:0.01];
     }
     

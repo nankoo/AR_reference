@@ -22,6 +22,7 @@ SampleMath::Vec2FSub(QCAR::Vec2F v1, QCAR::Vec2F v2)
 float
 SampleMath::Vec2FDist(QCAR::Vec2F v1, QCAR::Vec2F v2)
 {
+    
     float dx = v1.data[0] - v2.data[0];
     float dy = v1.data[1] - v2.data[1];
     return sqrt(dx * dx + dy * dy);
@@ -31,6 +32,7 @@ SampleMath::Vec2FDist(QCAR::Vec2F v1, QCAR::Vec2F v2)
 QCAR::Vec3F
 SampleMath::Vec3FAdd(QCAR::Vec3F v1, QCAR::Vec3F v2)
 {
+    
     QCAR::Vec3F r;
     r.data[0] = v1.data[0] + v2.data[0];
     r.data[1] = v1.data[1] + v2.data[1];
@@ -64,6 +66,7 @@ SampleMath::Vec3FScale(QCAR::Vec3F v, float s)
 float
 SampleMath::Vec3FDot(QCAR::Vec3F v1, QCAR::Vec3F v2)
 {
+    
     return v1.data[0] * v2.data[0] + v1.data[1] * v2.data[1] + v1.data[2] * v2.data[2];
 }
 

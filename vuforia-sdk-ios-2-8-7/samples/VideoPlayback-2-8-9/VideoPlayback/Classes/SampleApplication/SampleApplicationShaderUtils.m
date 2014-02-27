@@ -8,6 +8,8 @@
 @implementation SampleApplicationShaderUtils
 
 + (GLuint)compileShader:(NSString*)shaderFileName withDefs:(NSString *) defs withType:(GLenum)shaderType {
+    NSLog(@"番号105");
+    
     NSString* shaderName = [[shaderFileName lastPathComponent] stringByDeletingPathExtension];
     NSString* shaderFileType = [shaderFileName pathExtension];
     
@@ -19,6 +21,8 @@
     NSError* error;
     NSString* shaderString = [NSString stringWithContentsOfFile:shaderPath encoding:NSUTF8StringEncoding error:&error];
     if (!shaderString) {
+        NSLog(@"番号105a");
+        
         NSLog(@"Error loading shader (%@): %@", shaderFileName, error.localizedDescription);
         return 0;
     }
@@ -31,8 +35,10 @@
     int shaderStringLength = [shaderString length];
     
     if (defs == nil) {
+        NSLog(@"番号105b");
         glShaderSource(shaderHandle, 1, &shaderStringUTF8, &shaderStringLength);
     } else {
+        NSLog(@"番号105c");
         const char* finalShader[2] = {[defs UTF8String],shaderStringUTF8};
         GLint finalShaderSizes[2] = {[defs length], shaderStringLength};
         glShaderSource(shaderHandle, 2, finalShader, finalShaderSizes);
@@ -45,6 +51,7 @@
     GLint compileSuccess;
     glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &compileSuccess);
     if (compileSuccess == GL_FALSE) {
+        NSLog(@"番号105d");
         GLchar messages[256];
         glGetShaderInfoLog(shaderHandle, sizeof(messages), 0, &messages[0]);
         NSString *messageString = [NSString stringWithUTF8String:messages];
@@ -58,6 +65,7 @@
 
 + (int)createProgramWithVertexShaderFileName:(NSString*) vertexShaderFileName
                       fragmentShaderFileName:(NSString *) fragmentShaderFileName {
+    NSLog(@"番号106");
     return [SampleApplicationShaderUtils createProgramWithVertexShaderFileName:vertexShaderFileName
                                           withVertexShaderDefs:nil
                                         fragmentShaderFileName:fragmentShaderFileName
@@ -68,10 +76,13 @@
                         withVertexShaderDefs:(NSString *) vertexShaderDefs
                       fragmentShaderFileName:(NSString *) fragmentShaderFileName
                       withFragmentShaderDefs:(NSString *) fragmentShaderDefs {
+    NSLog(@"番号107");
+    
     GLuint vertexShader = [self compileShader:vertexShaderFileName withDefs:vertexShaderDefs withType:GL_VERTEX_SHADER];
     GLuint fragmentShader = [self compileShader:fragmentShaderFileName withDefs:fragmentShaderDefs withType:GL_FRAGMENT_SHADER];
     
     if ((vertexShader == 0) || (fragmentShader == 0)) {
+        NSLog(@"番号107a");
         NSLog(@"Error: error compiling shaders");
         return 0;
     }
@@ -79,6 +90,7 @@
     GLuint programHandle = glCreateProgram();
     
     if (programHandle == 0) {
+        NSLog(@"番号107b");
         NSLog(@"Error: can't create programe");
         return 0;
     }
@@ -89,6 +101,7 @@
     GLint linkSuccess;
     glGetProgramiv(programHandle, GL_LINK_STATUS, &linkSuccess);
     if (linkSuccess == GL_FALSE) {
+        NSLog(@"番号107c");
         GLchar messages[256];
         glGetProgramInfoLog(programHandle, sizeof(messages), 0, &messages[0]);
         NSString *messageString = [NSString stringWithUTF8String:messages];

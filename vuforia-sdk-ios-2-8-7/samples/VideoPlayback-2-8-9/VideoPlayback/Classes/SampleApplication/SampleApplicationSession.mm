@@ -55,8 +55,10 @@ namespace {
 
 - (id)initWithDelegate:(id<SampleApplicationControl>) delegate
 {
+    NSLog(@"番号90");
     self = [super init];
     if (self) {
+        NSLog(@"番号90a");
         self.delegate = delegate;
         
         // we keep a reference of the instance in order to implemet the QCAR callback
@@ -68,6 +70,7 @@ namespace {
 
 - (void)dealloc
 {
+    NSLog(@"番号91");
     instance = nil;
     [self setDelegate:nil];
     [super dealloc];
@@ -75,11 +78,14 @@ namespace {
 
 // build a NSError
 - (NSError *) NSErrorWithCode:(int) code {
+    NSLog(@"番号92");
     return [NSError errorWithDomain:SAMPLE_APPLICATION_ERROR_DOMAIN code:code userInfo:nil];
 }
 
 - (void) NSErrorWithCode:(int) code error:(NSError **) error{
+    NSLog(@"番号93");
     if (error != NULL) {
+        NSLog(@"番号93a");
         *error = [self NSErrorWithCode:code];
     }
 }
@@ -87,6 +93,7 @@ namespace {
 // Determine whether the device has a retina display
 - (BOOL)isRetinaDisplay
 {
+    NSLog(@"番号94");
     // If UIScreen mainScreen responds to selector
     // displayLinkWithTarget:selector: and the scale property is 2.0, then this
     // is a retina display
@@ -95,6 +102,7 @@ namespace {
 
 // Initialize the Vuforia SDK
 - (void) initAR:(int) QCARInitFlags ARViewBoundsSize:(CGSize) ARViewBoundsSize orientation:(UIInterfaceOrientation) ARViewOrientation {
+    NSLog(@"番号95");
     self.cameraIsActive = NO;
     self.cameraIsStarted = NO;
     mQCARInitFlags = QCARInitFlags;
@@ -116,8 +124,10 @@ namespace {
 // (Performed on a background thread)
 - (void)initQCARInBackground
 {
+    NSLog(@"番号96");
     // Background thread must have its own autorelease pool
     @autoreleasepool {
+        NSLog(@"番号96:autoreleasepool");
         QCAR::setInitParameters(mQCARInitFlags);
         
         // QCAR::init() will return positive numbers up to 100 as it progresses
@@ -128,11 +138,13 @@ namespace {
         } while (0 <= initSuccess && 100 > initSuccess);
         
         if (100 == initSuccess) {
+            NSLog(@"番号90:a");
             // We can now continue the initialization of Vuforia
             // (on the main thread)
             [self performSelectorOnMainThread:@selector(prepareAR) withObject:nil waitUntilDone:NO];
         }
         else {
+            NSLog(@"番号90:b");
             // Failed to initialise QCAR
             [self.delegate onInitARDone:[self NSErrorWithCode:E_INITIALIZING_QCAR]];
         }
@@ -141,20 +153,24 @@ namespace {
 
 // Resume QCAR
 - (bool) resumeAR:(NSError **)error {
+    NSLog(@"番号91");
     QCAR::onResume();
     
     // if the camera was previously started, but not currently active, then
     // we restart it
     if ((self.cameraIsStarted) && (! self.cameraIsActive)) {
+        NSLog(@"番号91a");
         
         // initialize the camera
         if (! QCAR::CameraDevice::getInstance().init(mCamera)) {
+            NSLog(@"番号91aa");
             [self NSErrorWithCode:E_INITIALIZING_CAMERA error:error];
             return NO;
         }
         
         // start the camera
         if (!QCAR::CameraDevice::getInstance().start()) {
+            NSLog(@"番号91ab");
             [self NSErrorWithCode:E_STARTING_CAMERA error:error];
             return NO;
         }
@@ -167,13 +183,17 @@ namespace {
 
 // Pause QCAR
 - (bool)pauseAR:(NSError **)error {
+    NSLog(@"番号92");
     if (self.cameraIsActive) {
+        NSLog(@"番号92a");
         // Stop and deinit the camera
         if(! QCAR::CameraDevice::getInstance().stop()) {
+            NSLog(@"番号92aa");
             [self NSErrorWithCode:E_STOPPING_CAMERA error:error];
             return NO;
         }
         if(! QCAR::CameraDevice::getInstance().deinit()) {
+            NSLog(@"番号92ab");
             [self NSErrorWithCode:E_DEINIT_CAMERA error:error];
             return NO;
         }
@@ -184,12 +204,15 @@ namespace {
 }
 
 - (void) QCAR_onUpdate:(QCAR::State *) state {
+    NSLog(@"番号93");
     if ((self.delegate != nil) && [self.delegate respondsToSelector:@selector(onQCARUpdate:)]) {
+        NSLog(@"番号93a");
         [self.delegate onQCARUpdate:state];
     }
 }
 
 - (void) prepareAR  {
+    NSLog(@"番号94");
     // Tell QCAR we've created a drawing surface
     QCAR::onSurfaceCreated();
     
@@ -200,6 +223,7 @@ namespace {
     // by the proper angle in order to match the EAGLView orientation
     if (self.mARViewOrientation == UIInterfaceOrientationPortrait)
     {
+        NSLog(@"番号94a");
         QCAR::onSurfaceChanged(self.mARViewBoundsSize.width, self.mARViewBoundsSize.height);
         QCAR::setRotation(QCAR::ROTATE_IOS_90);
         
@@ -207,6 +231,7 @@ namespace {
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationPortraitUpsideDown)
     {
+        NSLog(@"番号94b");
         QCAR::onSurfaceChanged(self.mARViewBoundsSize.width, self.mARViewBoundsSize.height);
         QCAR::setRotation(QCAR::ROTATE_IOS_270);
         
@@ -214,6 +239,7 @@ namespace {
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeLeft)
     {
+        NSLog(@"番号94c");
         QCAR::onSurfaceChanged(self.mARViewBoundsSize.height, self.mARViewBoundsSize.width);
         QCAR::setRotation(QCAR::ROTATE_IOS_180);
         
@@ -221,6 +247,7 @@ namespace {
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeRight)
     {
+        NSLog(@"番号94d");
         QCAR::onSurfaceChanged(self.mARViewBoundsSize.height, self.mARViewBoundsSize.width);
         QCAR::setRotation(1);
         
@@ -232,8 +259,10 @@ namespace {
 }
 
 - (void) initTracker {
+    NSLog(@"番号95");
     // ask the application to initialize its trackers
     if (! [self.delegate doInitTrackers]) {
+        NSLog(@"番号95a");
         [self.delegate onInitARDone:[self NSErrorWithCode:E_INIT_TRACKERS]];
         return;
     }
@@ -242,6 +271,7 @@ namespace {
 
 
 - (void) loadTrackerData {
+    NSLog(@"番号96");
     // Loading tracker data is a potentially lengthy operation, so perform it on
     // a background thread
     [self performSelectorInBackground:@selector(loadTrackerDataInBackground) withObject:nil];
@@ -251,8 +281,10 @@ namespace {
 // *** Performed on a background thread ***
 - (void)loadTrackerDataInBackground
 {
+    NSLog(@"番号97");
     // Background thread must have its own autorelease pool
     @autoreleasepool {
+        NSLog(@"番号97:autoreleasepool");
         // the application can now prepare the loading of the data
         if(! [self.delegate doLoadTrackersData]) {
             [self.delegate onInitARDone:[self NSErrorWithCode:E_LOADING_TRACKERS_DATA]];
@@ -266,6 +298,7 @@ namespace {
 // Configure QCAR with the video background size
 - (void)configureVideoBackgroundWithViewWidth:(float)viewWidth andHeight:(float)viewHeight
 {
+    NSLog(@"番号98");
     // Get the default video mode
     QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
     QCAR::VideoMode videoMode = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
@@ -283,6 +316,7 @@ namespace {
     // orientation to be wider than it is high.  The test is suitable for the
     // dimensions used in this sample
     if (self.mIsActivityInPortraitMode) {
+        NSLog(@"番号98a");
         // --- View is portrait ---
         
         // Compare aspect ratios of video and screen.  If they are different we
@@ -292,6 +326,7 @@ namespace {
         float aspectRatioView = viewHeight / viewWidth;
         
         if (aspectRatioVideo < aspectRatioView) {
+            NSLog(@"番号98aa");
             // Video (when rotated) is wider than the view: crop left and right
             // (top and bottom of video)
             
@@ -310,6 +345,7 @@ namespace {
             config.mSize.data[1] = (int)viewHeight;
         }
         else {
+            NSLog(@"番号98ab");
             // Video (when rotated) is narrower than the view: crop top and
             // bottom (left and right of video).  Also used when aspect ratios
             // match (no cropping)
@@ -336,6 +372,7 @@ namespace {
         }
     }
     else {
+        NSLog(@"番号98b");
         // --- View is landscape ---
         float temp = viewWidth;
         viewWidth = viewHeight;
@@ -348,6 +385,7 @@ namespace {
         float aspectRatioView = viewWidth / viewHeight;
         
         if (aspectRatioVideo < aspectRatioView) {
+            NSLog(@"番号98ba");
             // Video is taller than the view: crop top and bottom
             
             // --------------------
@@ -363,6 +401,7 @@ namespace {
             config.mSize.data[1] = (int)videoMode.mHeight * (viewWidth / (float)videoMode.mWidth);
         }
         else {
+            NSLog(@"番号98bb");
             // Video is wider than the view: crop left and right.  Also used
             // when aspect ratios match (no cropping)
             
@@ -398,14 +437,17 @@ namespace {
 // Start QCAR camera with the specified view size
 - (bool)startCamera:(QCAR::CameraDevice::CAMERA)camera viewWidth:(float)viewWidth andHeight:(float)viewHeight error:(NSError **)error
 {
+    NSLog(@"番号99");
     // initialize the camera
     if (! QCAR::CameraDevice::getInstance().init(camera)) {
+        NSLog(@"番号99a");
         [self NSErrorWithCode:-1 error:error];
         return NO;
     }
     
     // start the camera
     if (!QCAR::CameraDevice::getInstance().start()) {
+        NSLog(@"番号99b");
         [self NSErrorWithCode:-1 error:error];
         return NO;
     }
@@ -416,6 +458,7 @@ namespace {
     
     // ask the application to start the tracker(s)
     if(! [self.delegate doStartTrackers] ) {
+        NSLog(@"番号99c");
         [self NSErrorWithCode:-1 error:error];
         return NO;
     }
@@ -431,10 +474,12 @@ namespace {
 
 
 - (bool) startAR:(QCAR::CameraDevice::CAMERA)camera error:(NSError **)error {
+    NSLog(@"番号100");
     // Start the camera.  This causes QCAR to locate our EAGLView in the view
     // hierarchy, start a render thread, and then call renderFrameQCAR on the
     // view periodically
     if (! [self startCamera: camera viewWidth:self.mARViewBoundsSize.width andHeight:self.mARViewBoundsSize.height error:error]) {
+        NSLog(@"番号100a");
         return NO;
     }
     self.cameraIsActive = YES;
@@ -445,8 +490,10 @@ namespace {
 
 // Stop QCAR camera
 - (bool)stopAR:(NSError **)error {
+    NSLog(@"番号101");
     // Stop the camera
     if (self.cameraIsActive) {
+        NSLog(@"番号101a");
         // Stop and deinit the camera
         QCAR::CameraDevice::getInstance().stop();
         QCAR::CameraDevice::getInstance().deinit();
@@ -456,18 +503,21 @@ namespace {
 
     // ask the application to stop the trackers
     if(! [self.delegate doStopTrackers]) {
+        NSLog(@"番号101b");
         [self NSErrorWithCode:E_STOPPING_TRACKERS error:error];
         return NO;
     }
     
     // ask the application to unload the data associated to the trackers
     if(! [self.delegate doUnloadTrackersData]) {
+        NSLog(@"番号101c");
         [self NSErrorWithCode:E_UNLOADING_TRACKERS_DATA error:error];
         return NO;
     }
     
     // ask the application to deinit the trackers
     if(! [self.delegate doDeinitTrackers]) {
+        NSLog(@"番号101d");
         [self NSErrorWithCode:E_DEINIT_TRACKERS error:error];
         return NO;
     }
@@ -481,12 +531,15 @@ namespace {
 
 // stop the camera
 - (bool) stopCamera:(NSError **)error {
+    NSLog(@"番号102");
     if (self.cameraIsActive) {
+        NSLog(@"番号102a");
         // Stop and deinit the camera
         QCAR::CameraDevice::getInstance().stop();
         QCAR::CameraDevice::getInstance().deinit();
         self.cameraIsActive = NO;
     } else {
+        NSLog(@"番号102b");
         [self NSErrorWithCode:E_CAMERA_NOT_STARTED error:error];
         return NO;
     }
@@ -494,6 +547,7 @@ namespace {
     
     // Stop the trackers
     if(! [self.delegate doStopTrackers]) {
+        NSLog(@"番号102c");
         [self NSErrorWithCode:E_STOPPING_TRACKERS error:error];
         return NO;
     }
@@ -502,6 +556,7 @@ namespace {
 }
 
 - (void) errorMessage:(NSString *) message {
+    NSLog(@"番号103");
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:SAMPLE_APPLICATION_ERROR_DOMAIN
                                                     message:message
                                                    delegate:nil
@@ -515,7 +570,9 @@ namespace {
 // Callback function called by the tracker when each tracking cycle has finished
 void VuforiaApplication_UpdateCallback::QCAR_onUpdate(QCAR::State& state)
 {
+    NSLog(@"番号104");
     if (instance != nil) {
+        NSLog(@"番号104a");
         [instance QCAR_onUpdate:&state];
     }
 }

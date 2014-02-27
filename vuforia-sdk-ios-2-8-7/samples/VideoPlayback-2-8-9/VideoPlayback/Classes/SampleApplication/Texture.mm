@@ -20,10 +20,13 @@
 
 - (id)initWithImageFile:(NSString*)filename
 {
+    NSLog(@"番号108");
     self = [super init];
     
     if (nil != self) {
+        NSLog(@"番号108a");
         if (NO == [self loadImage:filename]) {
+            NSLog(@"番号108aa");
             NSLog(@"Failed to load texture image from file %@", filename);
             [self autorelease];
             self = nil;
@@ -36,7 +39,9 @@
 
 - (void)dealloc
 {
+    NSLog(@"番号109");
     if (_pngData) {
+        NSLog(@"番号109a");
         delete[] _pngData;
     }
     
@@ -49,6 +54,7 @@
 
 - (BOOL)loadImage:(NSString*)filename
 {
+    NSLog(@"番号110");
     BOOL ret = NO;
     
     // Build the full path of the image file
@@ -58,7 +64,10 @@
     UIImage* uiImage = [UIImage imageWithContentsOfFile:fullPath];
     
     if (uiImage) {
+        NSLog(@"番号110a");
+        
         // Get the inner CGImage from the UIImage wrapper
+        //CGImageRef:
         CGImageRef cgImage = uiImage.CGImage;
         
         // Get the image size
@@ -82,8 +91,10 @@
 
 
 - (BOOL)copyImageDataForOpenGL:(CFDataRef)imageData
-{    
+{
+    NSLog(@"番号111");
     if (_pngData) {
+        NSLog(@"番号111a");
         delete[] _pngData;
     }
     
@@ -93,6 +104,7 @@
 
     // Copy the row data from bottom to top
     for (int i = 0; i < _height; ++i) {
+        NSLog(@"番号111:for");
         memcpy(_pngData + rowSize * i, pixels + rowSize * (_height - 1 - i), _width * channels);
     }
     

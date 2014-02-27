@@ -2,6 +2,8 @@
  Copyright (c) 2012-2013 Qualcomm Connected Experiences, Inc.
  All Rights Reserved.
  ==============================================================================*/
+//VideoPlaybackeaglview.m
+
 
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/ES2/gl.h>
@@ -42,21 +44,27 @@
 //
 //******************************************************************************
 
+//具体的にファイルを入力していっているのはこのクラス
+
 
 namespace {
+
     // --- Data private to this unit ---
     // Augmentation model scale factor
     const float kObjectScale = 3.0f;
     
     // Texture filenames (an Object3D object is created for each texture)
-    const char* textureFilenames[NUM_AUGMENTATION_TEXTURES] = {
+    const char*  textureFilenames[NUM_AUGMENTATION_TEXTURES] = {
         "icon_play.png",
         "icon_loading.png",
         "icon_error.png",
         "VuforiaSizzleReel_1.png",
         "VuforiaSizzleReel_2.png"
     };
+
     
+
+    //再生/停止等々のpng画像を表示する為に、数字の形で列挙する
     enum tagObjectIndex {
         OBJECT_PLAY_ICON,
         OBJECT_BUSY_ICON,
@@ -64,6 +72,7 @@ namespace {
         OBJECT_KEYFRAME_1,
         OBJECT_KEYFRAME_2,
     };
+
     
     const NSTimeInterval DOUBLE_TAP_INTERVAL = 0.3f;
     const NSTimeInterval TRACKING_LOST_TIMEOUT = 2.0f;
@@ -73,6 +82,7 @@ namespace {
     const float SCALE_ICON_TRANSLATION = 1.98f;
     
     // Video quad texture coordinates
+    //quad:組？
     const GLfloat videoQuadTextureCoords[] = {
         0.0, 1.0,
         1.0, 1.0,
@@ -82,6 +92,7 @@ namespace {
     
     struct tagVideoData {
         // Needed to calculate whether a screen tap is inside the target
+        //
         QCAR::Matrix44F modelViewMatrix;
         
         // Trackable dimensions
@@ -108,10 +119,12 @@ namespace {
 
 @implementation VideoPlaybackEAGLView
 
+//CAEAGLLayerの保証する基本のレイヤー
 // You must implement this method, which ensures the view's underlying layer is
 // of type CAEAGLLayer
 + (Class)layerClass
 {
+    NSLog(@"番号１");
     return [CAEAGLLayer class];
 }
 
@@ -121,34 +134,47 @@ namespace {
 
 - (id)initWithFrame:(CGRect)frame rootViewController:(VideoPlaybackViewController *) rootViewController appSession:(SampleApplicationSession *) app
 {
+    NSLog(@"番号２");
     self = [super initWithFrame:frame];
     
     if (self) {
+        NSLog(@"番号2a");
         vapp = app;
         videoPlaybackViewController = rootViewController;
         
         // Enable retina mode if available on this device
         if (YES == [vapp isRetinaDisplay]) {
+            NSLog(@"番号2aa");
             [self setContentScaleFactor:2.0f];
         }
         
         // Load the augmentation textures
+        //テクスチャーの読み込み
         for (int i = 0; i < NUM_AUGMENTATION_TEXTURES; ++i) {
+            NSLog(@"番号2for1");
+            //textureFilenames:表示するファイルの画像
             augmentationTexture[i] = [[Texture alloc] initWithImageFile:[NSString stringWithCString:textureFilenames[i] encoding:NSASCIIStringEncoding]];
         }
 
         // Create the OpenGL ES context
+        //文脈
         context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
         
         // The EAGLContext must be set for each thread that wishes to use it.
         // Set it the first time this method is called (on the main thread)
         if (context != [EAGLContext currentContext]) {
+            NSLog(@"番号２ab");
+            //EAGLContext
             [EAGLContext setCurrentContext:context];
         }
         
         // Generate the OpenGL ES texture and upload the texture data for use
         // when rendering the augmentation
+        //textureの情報を使えるようにアップする
         for (int i = 0; i < NUM_AUGMENTATION_TEXTURES; ++i) {
+            //NUM_AUGMENTATION_TEXTURES: "icon_play.png","icon_loading.png","icon_error.png","VuforiaSizzleReel_1.png","VuforiaSizzleReel_2.png"
+            //textureの大きさを調節？
+            NSLog(@"番号２for2");
             GLuint textureID;
             glGenTextures(1, &textureID);
             [augmentationTexture[i] setTextureID:textureID];
@@ -159,6 +185,7 @@ namespace {
             
             // Set appropriate texture parameters (for NPOT textures)
             if (OBJECT_KEYFRAME_1 <= i) {
+                NSLog(@"番号２for(if)");
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
@@ -169,49 +196,66 @@ namespace {
     
     return self;
 }
-    
+
+//動画ここで変えてる。ファイルで変更(9→3)
 - (void) prepare {
+    NSLog(@"番号3");
     // For each target, create a VideoPlayerHelper object and zero the
     // target dimensions
-    // For each target, create a VideoPlayerHelper object and zero the
-    // target dimensions
+    //dimensions:寸法
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号3for1");
         videoPlayerHelper[i] = [[VideoPlayerHelper alloc] initWithRootViewController:videoPlaybackViewController];
+        //QCAR::Vec2FーtargetPositiveDimensions
         videoData[i].targetPositiveDimensions.data[0] = 0.0f;
         videoData[i].targetPositiveDimensions.data[1] = 0.0f;
     }
     
     // Start video playback from the current position (the beginning) on the
     // first run of the app
+    //ビデオの再生はこのメソッドから
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号3for2");
         videoPlaybackTime[i] = VIDEO_PLAYBACK_CURRENT_POSITION;
     }
     
     // For each video-augmented target
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号3for3");
         // Load a local file for playback and resume playback if video was
         // playing when the app went into the background
+        //動画を再生する為に、ローカルからデータを読み込む
         VideoPlayerHelper* player = [self getVideoPlayerHelper:i];
         NSString* filename;
         
         switch (i) {
+                //movie
             case 0:
-            filename = @"VuforiaSizzleReel_1.m4v";
+                NSLog(@"番号3for3:switch");
+            filename = @"vuforia.mov";
+            //filename = @"VuforiaSizzleReel_1.m4v";
+            
             break;
+                //defaultの意味って？
             default:
             filename = @"VuforiaSizzleReel_2.m4v";
+            //filename = @"sample_iPod.m4v";
+            
             break;
         }
-        
+    
         if (NO == [player load:filename playImmediately:NO fromPosition:videoPlaybackTime[i]]) {
+            NSLog(@"番号3for3if");
             NSLog(@"Failed to load media");
         }
     }
     
     
 }
-    
+
+//(10→4)
 - (void) dismiss {
+    NSLog(@"番号4");
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
         [videoPlayerHelper[i] unload];
         [videoPlayerHelper[i] release];
@@ -221,20 +265,24 @@ namespace {
 
 - (void)dealloc
 {
+    NSLog(@"番号5");
     [self deleteFramebuffer];
     
     // Tear down context
     if ([EAGLContext currentContext] == context) {
+        NSLog(@"番号5a");
         [EAGLContext setCurrentContext:nil];
     }
     
     [context release];
 
     for (int i = 0; i < NUM_AUGMENTATION_TEXTURES; ++i) {
+        NSLog(@"番号5for1");
         [augmentationTexture[i] release];
     }
     
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号5for2");
         [videoPlayerHelper[i] release];
     }
     [super dealloc];
@@ -243,10 +291,12 @@ namespace {
 
 - (void)finishOpenGLESCommands
 {
+    NSLog(@"番号6");
     // Called in response to applicationWillResignActive.  The render loop has
     // been stopped, so we now make sure all OpenGL ES commands complete before
     // we (potentially) go into the background
     if (context) {
+        NSLog(@"番号6a");
         [EAGLContext setCurrentContext:context];
         glFinish();
     }
@@ -255,6 +305,7 @@ namespace {
 
 - (void)freeOpenGLESResources
 {
+    NSLog(@"番号7");
     // Called in response to applicationDidEnterBackground.  Free easily
     // recreated OpenGL ES resources
     [self deleteFramebuffer];
@@ -265,22 +316,31 @@ namespace {
 #pragma mark - User interaction
 
 - (bool) handleTouchPoint:(CGPoint) point {
+    NSLog(@"番号8");
     // Store the current touch location
     touchLocation_X = point.x;
     touchLocation_Y = point.y;
     
     // Determine which target was touched (if no target was touch, touchedTarget
     // will be -1)
+    //ターゲットがタッチされたら
     touchedTarget = [self tapInsideTargetWithID];
     
     // Ignore touches when videoPlayerHelper is playing in fullscreen mode
+    //既に降るスクリーンでムービー流れてたら無視でおけ
+    //下記「-1」はどういうときに使われるのか？
     if (-1 != touchedTarget && PLAYING_FULLSCREEN != [videoPlayerHelper[touchedTarget] getStatus]) {
+        NSLog(@"番号8a");
         // Get the state of the video player for the target the user touched
+        //videoplayerの情報(再生/停止etc)を取得
         MEDIA_STATE mediaState = [videoPlayerHelper[touchedTarget] getStatus];
         
         // If any on-texture video is playing, pause it
+        //もし動画が流れていたら止める
         for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+            NSLog(@"番号8a:for1");
             if (PLAYING == [videoPlayerHelper[i] getStatus]) {
+                NSLog(@"番号8a:for1:a");
                 [videoPlayerHelper[i] pause];
             }
         }
@@ -288,6 +348,7 @@ namespace {
 #ifdef EXAMPLE_CODE_REMOTE_FILE
         // With remote files, single tap starts playback using the native player
         if (ERROR != mediaState && NOT_READY != mediaState) {
+            NSLog(@"番号8aa");
             // Play the video
             NSLog(@"Playing video with native player");
             [videoPlayerHelper[touchedTarget] play:YES fromPosition:VIDEO_PLAYBACK_CURRENT_POSITION];
@@ -295,6 +356,7 @@ namespace {
 #else
         // For the target the user touched
         if (ERROR != mediaState && NOT_READY != mediaState && PLAYING != mediaState) {
+            NSLog(@"番号8ab");
             // Play the video
             NSLog(@"Playing video with on-texture player");
             [videoPlayerHelper[touchedTarget] play:NO fromPosition:VIDEO_PLAYBACK_CURRENT_POSITION];
@@ -302,33 +364,42 @@ namespace {
 #endif
         return true;
     } else {
+        NSLog(@"番号8b");
         return false;
     }
 }
 - (void) preparePlayers {
+    NSLog(@"番号9");
     [self prepare];
 }
 
 
 - (void) dismissPlayers {
+    NSLog(@"番号10");
     [self dismiss];
 }
 
+///////
 
 - (bool) handleDoubleTouchPoint:(CGPoint) point {
+    NSLog(@"番号11");
     // Store the current touch location
     touchLocation_X = point.x;
     touchLocation_Y = point.y;
     
     // Determine which target was touched (if no target was touch, touchedTarget
     // will be -1)
+    //ターゲットがタッチされたら
     touchedTarget = [self tapInsideTargetWithID];
     
     if (-1 != touchedTarget) {
+        NSLog(@"番号11a");
         if (PLAYING_FULLSCREEN != [videoPlayerHelper[touchedTarget] getStatus]) {
+            NSLog(@"番号11aa");
             MEDIA_STATE mediaState = [videoPlayerHelper[touchedTarget] getStatus];
             
             if (ERROR != mediaState && NOT_READY != mediaState) {
+                NSLog(@"番号11aaa");
                 // Play the video
                 NSLog(@"Playing video with native player");
                 [videoPlayerHelper[touchedTarget] play:YES fromPosition:VIDEO_PLAYBACK_CURRENT_POSITION];
@@ -336,6 +407,7 @@ namespace {
             
             // If any on-texture video is playing, pause it
             for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+                NSLog(@"番号11aa:for");
                 if (PLAYING == [videoPlayerHelper[i] getStatus]) {
                     [videoPlayerHelper[i] pause];
                 }
@@ -344,6 +416,7 @@ namespace {
 
         
     } else {
+        NSLog(@"番号11b");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"show_menu" object:self];
     }
 
@@ -351,8 +424,10 @@ namespace {
 }
 
 // Determine whether a screen tap is inside the target
+//スクリーンの画像がタッチされたかどうか
 - (int)tapInsideTargetWithID
 {
+    NSLog(@"番号12");
     QCAR::Vec3F intersection, lineStart, lineEnd;
     // Get the current projection matrix
     QCAR::Matrix44F projectionMatrix = [vapp projectionMatrix];
@@ -368,13 +443,16 @@ namespace {
     // height / 2.  The following if statement simply checks that the tap is
     // within this range
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号12:for");
         SampleMath::projectScreenPointToPlane(inverseProjMatrix, videoData[i].modelViewMatrix, rect.size.width, rect.size.height,
                                               QCAR::Vec2F(touchLocation_X, touchLocation_Y), QCAR::Vec3F(0, 0, 0), QCAR::Vec3F(0, 0, 1), intersection, lineStart, lineEnd);
         
         if ((intersection.data[0] >= -videoData[i].targetPositiveDimensions.data[0]) && (intersection.data[0] <= videoData[i].targetPositiveDimensions.data[0]) &&
             (intersection.data[1] >= -videoData[i].targetPositiveDimensions.data[1]) && (intersection.data[1] <= videoData[i].targetPositiveDimensions.data[1])) {
+            NSLog(@"番号12:for:a");
             // The tap is only valid if it is inside an active target
             if (YES == videoData[i].isActive) {
+                NSLog(@"番号12:for:aa");
                 touchInTarget = i;
                 break;
             }
@@ -390,6 +468,7 @@ namespace {
 // Get a pointer to a VideoPlayerHelper object held by this EAGLView
 - (VideoPlayerHelper*)getVideoPlayerHelper:(int)index
 {
+    NSLog(@"番号13");
     return videoPlayerHelper[index];
 }
 
@@ -408,8 +487,10 @@ namespace {
 // the screen.
 //
 // *** QCAR will call this method periodically on a background thread ***
+//動画を流す際のレイアウト等々を整える
 - (void)renderFrameQCAR
 {
+    NSLog(@"番号14");
     [self setFramebuffer];
     
     // Clear colour and depth buffers
@@ -430,39 +511,52 @@ namespace {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     
+    //カメラの方向をフロント/バックで切り替える
     if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON) {
+        NSLog(@"番号14a");
         // Front camera
+        //どうやってカメラ機能をきりかえているのか
         glFrontFace(GL_CW);
     }
     else {
+        NSLog(@"番号14b");
         // Back camera
         glFrontFace(GL_CCW);
     }
+    
     
     // Get the active trackables
     int numActiveTrackables = state.getNumTrackableResults();
     
     // ----- Synchronise data access -----
+    //nslock:複数スレッドからの同時アクセスをブロックする機能
     [dataLock lock];
     
     // Assume all targets are inactive (used when determining tap locations)
+    //ターゲットを活発じゃない状態にする
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号14:for1");
         videoData[i].isActive = NO;
     }
     
     // Did we find any trackables this frame?
     for (int i = 0; i < numActiveTrackables; ++i) {
+        NSLog(@"番号14:for2");
         // Get the trackable
         const QCAR::TrackableResult* trackableResult = state.getTrackableResult(i);
         const QCAR::ImageTarget& imageTarget = (const QCAR::ImageTarget&) trackableResult->getTrackable();
         
         // VideoPlayerHelper to use for current target
+        //上のplayerindexが違うければ、下の動画読み込み
         int playerIndex = 0;    // stones
         
         if (strcmp(imageTarget.getName(), "chips") == 0)
         {
+            NSLog(@"番号14:for2:a");
             playerIndex = 1;
         }
+        
+        
         
         // Mark this video (target) as active
         videoData[playerIndex].isActive = YES;
@@ -470,6 +564,8 @@ namespace {
         // Get the target size (used to determine if taps are within the target)
         if (0.0f == videoData[playerIndex].targetPositiveDimensions.data[0] ||
             0.0f == videoData[playerIndex].targetPositiveDimensions.data[1]) {
+            
+            NSLog(@"番号14:for2:b");
             const QCAR::ImageTarget& imageTarget = (const QCAR::ImageTarget&) trackableResult->getTrackable();
             
             videoData[playerIndex].targetPositiveDimensions = imageTarget.getSize();
@@ -493,6 +589,7 @@ namespace {
         // Retain value between calls
         static GLuint videoTextureID[NUM_VIDEO_TARGETS] = {0};
         
+        //現在のムービーの状態を表す変数：currentStatus
         MEDIA_STATE currentStatus = [videoPlayerHelper[playerIndex] getStatus];
         
         // NSLog(@"MEDIA_STATE for %d is %d", playerIndex, currentStatus);
@@ -506,9 +603,13 @@ namespace {
         // --- END INFORMATION ---
         
         switch (currentStatus) {
+                
+                NSLog(@"番号14:for2:switch");
             case PLAYING: {
+                NSLog(@"番号14:for2:switch(playing)");
                 // If the tracking lost timer is scheduled, terminate it
                 if (nil != trackingLostTimer) {
+                    NSLog(@"番号14:for2:switch(playing):a");
                     // Timer termination must occur on the same thread on which
                     // it was installed
                     [self performSelectorOnMainThread:@selector(terminateTrackingLostTimer) withObject:nil waitUntilDone:YES];
@@ -519,6 +620,7 @@ namespace {
                 GLuint videoTexID = [videoPlayerHelper[playerIndex] updateVideoData];
                 
                 if (0 == videoTextureID[playerIndex]) {
+                    NSLog(@"番号14:for2:switch(playing):b");
                     videoTextureID[playerIndex] = videoTexID;
                 }
                 
@@ -526,10 +628,12 @@ namespace {
             }
             case PAUSED:
                 if (0 == videoTextureID[playerIndex]) {
+                    NSLog(@"番号14:for2:switch(paused):a");
                     // No video texture available, display keyframe
                     displayVideoFrame = NO;
                 }
                 else {
+                    NSLog(@"番号14:for2:switch(paused):b");
                     // Display the texture most recently returned from the call
                     // to [videoPlayerHelper updateVideoData]
                     frameTextureID = videoTextureID[playerIndex];
@@ -544,11 +648,13 @@ namespace {
         }
         
         if (YES == displayVideoFrame) {
+            NSLog(@"番号14:for2a");
             // ---- Display the video frame -----
             aspectRatio = (float)[videoPlayerHelper[playerIndex] getVideoHeight] / (float)[videoPlayerHelper[playerIndex] getVideoWidth];
             texCoords = videoQuadTextureCoords;
         }
         else {
+            NSLog(@"番号14:for2b");
             // ----- Display the keyframe -----
             Texture* t = augmentationTexture[OBJECT_KEYFRAME_1 + playerIndex];
             frameTextureID = [t textureID];
@@ -562,6 +668,7 @@ namespace {
         // If the current status is valid (not NOT_READY or ERROR), render the
         // video quad with the texture we've just selected
         if (NOT_READY != currentStatus) {
+            NSLog(@"番号14:for2(if)a");
             // Convert trackable pose to matrix for use with OpenGL
             QCAR::Matrix44F modelViewMatrixVideo = QCAR::Tool::convertPose2GLMatrix(trackablePose);
             QCAR::Matrix44F modelViewProjectionVideo;
@@ -602,26 +709,33 @@ namespace {
         }
         
         // If the current status is not PLAYING, render an icon
+        //ステータスによってムービー上に表示する画像を入れ替えている制御文
         if (PLAYING != currentStatus) {
+            NSLog(@"番号14:for2(if)b");
             GLuint iconTextureID;
             
             switch (currentStatus) {
+                    NSLog(@"番号14:for2(if)b:switch");
                 case READY:
                 case REACHED_END:
                 case PAUSED:
                 case STOPPED: {
                     // ----- Display play icon -----
+                    NSLog(@"番号14:for2(if)b:(switch)a");
+                    //OBJECT_PLAY_ICON:再生のアイコン？
                     iconTextureID = [augmentationTexture[OBJECT_PLAY_ICON] textureID];
                     break;
                 }
                     
                 case ERROR: {
+                    NSLog(@"番号14:for2(if)b:(switch)b");
                     // ----- Display error icon -----
                     iconTextureID = [augmentationTexture[OBJECT_ERROR_ICON] textureID];
                     break;
                 }
                     
                 default: {
+                    NSLog(@"番号14:for2(if)b:(switch)c");
                     // ----- Display busy icon -----
                     iconTextureID = [augmentationTexture[OBJECT_BUSY_ICON] textureID];
                     break;
@@ -709,6 +823,7 @@ namespace {
 // Create the tracking lost timer
 - (void)createTrackingLostTimer
 {
+    NSLog(@"番号15");
     trackingLostTimer = [NSTimer scheduledTimerWithTimeInterval:TRACKING_LOST_TIMEOUT target:self selector:@selector(trackingLostTimerFired:) userInfo:nil repeats:NO];
 }
 
@@ -716,6 +831,7 @@ namespace {
 // Terminate the tracking lost timer
 - (void)terminateTrackingLostTimer
 {
+    NSLog(@"番号16");
     [trackingLostTimer invalidate];
     trackingLostTimer = nil;
 }
@@ -724,9 +840,11 @@ namespace {
 // Tracking lost timer fired, pause video playback
 - (void)trackingLostTimerFired:(NSTimer*)timer
 {
+    NSLog(@"番号17");
     // Tracking has been lost for TRACKING_LOST_TIMEOUT seconds, pause playback
     // (we can safely do this on all our VideoPlayerHelpers objects)
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
+        NSLog(@"番号17:for");
         [videoPlayerHelper[i] pause];
     }
     trackingLostTimer = nil;
@@ -738,10 +856,12 @@ namespace {
 
 - (void)initShaders
 {
+    NSLog(@"番号18");
     shaderProgramID = [SampleApplicationShaderUtils createProgramWithVertexShaderFileName:@"Simple.vertsh"
                                                    fragmentShaderFileName:@"Simple.fragsh"];
 
     if (0 < shaderProgramID) {
+        NSLog(@"番号18a");
         vertexHandle = glGetAttribLocation(shaderProgramID, "vertexPosition");
         normalHandle = glGetAttribLocation(shaderProgramID, "vertexNormal");
         textureCoordHandle = glGetAttribLocation(shaderProgramID, "vertexTexCoord");
@@ -749,6 +869,7 @@ namespace {
         texSampler2DHandle  = glGetUniformLocation(shaderProgramID,"texSampler2D");
     }
     else {
+        NSLog(@"番号18b");
         NSLog(@"Could not initialise augmentation shader");
     }
 }
@@ -756,7 +877,9 @@ namespace {
 
 - (void)createFramebuffer
 {
+    NSLog(@"番号19");
     if (context) {
+        NSLog(@"番号19a");
         // Create default framebuffer object
         glGenFramebuffers(1, &defaultFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
@@ -789,20 +912,25 @@ namespace {
 
 - (void)deleteFramebuffer
 {
+    NSLog(@"番号20");
     if (context) {
+        NSLog(@"番号20a");
         [EAGLContext setCurrentContext:context];
         
         if (defaultFramebuffer) {
+            NSLog(@"番号20aa");
             glDeleteFramebuffers(1, &defaultFramebuffer);
             defaultFramebuffer = 0;
         }
         
         if (colorRenderbuffer) {
+            NSLog(@"番号20ab");
             glDeleteRenderbuffers(1, &colorRenderbuffer);
             colorRenderbuffer = 0;
         }
         
         if (depthRenderbuffer) {
+            NSLog(@"番号20ac");
             glDeleteRenderbuffers(1, &depthRenderbuffer);
             depthRenderbuffer = 0;
         }
@@ -812,13 +940,16 @@ namespace {
 
 - (void)setFramebuffer
 {
+    NSLog(@"番号21");
     // The EAGLContext must be set for each thread that wishes to use it.  Set
     // it the first time this method is called (on the render thread)
     if (context != [EAGLContext currentContext]) {
+        NSLog(@"番号21a");
         [EAGLContext setCurrentContext:context];
     }
     
     if (!defaultFramebuffer) {
+        NSLog(@"番号21b");
         // Perform on the main thread to ensure safe memory allocation for the
         // shared buffer.  Block until the operation is complete to prevent
         // simultaneous access to the OpenGL context
@@ -831,6 +962,7 @@ namespace {
 
 - (BOOL)presentFramebuffer
 {
+    NSLog(@"番号22");
     // setFramebuffer must have been called before presentFramebuffer, therefore
     // we know the context is valid and has been set for this (render) thread
     

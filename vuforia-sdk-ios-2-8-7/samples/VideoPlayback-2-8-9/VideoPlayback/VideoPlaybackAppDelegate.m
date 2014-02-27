@@ -16,10 +16,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //TOP画面をdelegateで作成
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
+    //SampleAppAboutViewController：vuforia特有のファイル
     SampleAppAboutViewController *vc = [[[SampleAppAboutViewController alloc] initWithNibName:@"SampleAppAboutViewController" bundle:nil] autorelease];
-    vc.appTitle = @"Video Playback";
+    vc.appTitle = @"Vuforia";
     vc.appAboutPageName = @"VP_about";
     vc.appViewControllerClassName = @"VideoPlaybackViewController";
     
