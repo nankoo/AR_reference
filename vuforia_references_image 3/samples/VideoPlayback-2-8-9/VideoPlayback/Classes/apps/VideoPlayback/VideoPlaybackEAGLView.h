@@ -19,7 +19,7 @@
 #import "VideoPlaybackEAGLView.h"
 
 //定数
-#define NUM_AUGMENTATION_TEXTURES_obj 2
+#define NUM_AUGMENTATION_TEXTURES_obj 3
 #define NUM_AUGMENTATION_TEXTURES 5
 #define NUM_VIDEO_TARGETS 2
 #define NUM_TEAPOT_OBJECT_INDEX

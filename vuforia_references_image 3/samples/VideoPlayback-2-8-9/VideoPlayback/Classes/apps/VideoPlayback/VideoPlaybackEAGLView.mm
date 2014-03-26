@@ -20,6 +20,7 @@
 
 #import "VideoPlaybackEAGLView.h"
 #import "Texture.h"
+#import "objectTex.h"
 #import "SampleApplicationUtils.h"
 #import "SampleApplicationShaderUtils.h"
 #import "Teapot.h"
@@ -69,13 +70,11 @@ namespace {
 
 
     ////img
-//    const char* textureFilenamesImg[] = {
-//        "cube.png",
-//        "TextureTeapotBrass.png",
-//        //"TextureTeapotBlue.png",
-//        "TextureTeapotRed.png",
-//        "building_texture.jpeg"
-//    };
+    const char* textureFilenamesObj[NUM_AUGMENTATION_TEXTURES_obj] = {
+        "TextureTeapotBlue.png",
+        "TextureTeapotRed.png",
+        "building_texture.jpeg"
+    };
     const float kObjectScaleNormal = 50.0f;
     const float kObjectScaleOffTargetTracking = 12.0f;
     ///////
@@ -184,6 +183,15 @@ namespace {
             augmentationTexture[i] = [[Texture alloc] initWithImageFile:[NSString stringWithCString:textureFilenames[i] encoding:NSASCIIStringEncoding]];
         }
 
+        //
+        for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+            NSLog(@"番号2for1");
+            //textureFilenames:表示するファイルの画像
+            augumentationObj[i] = [[objectTex alloc] initWithImageFile:[NSString stringWithCString:textureFilenamesObj[i] encoding:NSASCIIStringEncoding]];
+            NSLog(@"texture= %@", [[objectTex alloc] initWithImageFile:[NSString stringWithCString:textureFilenamesObj[i] encoding:NSASCIIStringEncoding]]);
+        }
+        //
+
         // Create the OpenGL ES context
         //文脈
         context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -202,10 +210,10 @@ namespace {
         for (int i = 0; i < NUM_AUGMENTATION_TEXTURES; ++i) {
             //NUM_AUGMENTATION_TEXTURES: "icon_play.png","icon_loading.png","icon_error.png","VuforiaSizzleReel_1.png","VuforiaSizzleReel_2.png"
             NSLog(@"番号２for2");
-            GLuint textureID;
-            glGenTextures(1, &textureID);
-            [augmentationTexture[i] setTextureID:textureID];
-            glBindTexture(GL_TEXTURE_2D, textureID);
+            GLuint textureID1;
+            glGenTextures(1, &textureID1);
+            [augmentationTexture[i] setTextureID:textureID1];
+            glBindTexture(GL_TEXTURE_2D, textureID1);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, [augmentationTexture[i] width], [augmentationTexture[i] height], 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)[augmentationTexture[i] pngData]);
@@ -217,6 +225,29 @@ namespace {
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
         }
+        ///img
+            for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+                //NUM_AUGMENTATION_TEXTURES: "icon_play.png","icon_loading.png","icon_error.png","VuforiaSizzleReel_1.png","VuforiaSizzleReel_2.png"
+                NSLog(@"番号２for2");
+                GLuint textureID;
+                glGenTextures(1, &textureID);
+                [augumentationObj[i] setTextureIDO:textureID];
+                glBindTexture(GL_TEXTURE_2D, textureID);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, [augumentationObj[i] widthO], [augumentationObj[i] heightO], 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)[augumentationObj[i] pngDataO]);
+                
+            
+            // Set appropriate texture parameters (for NPOT textures)
+            if (OBJECT_KEYFRAME_1 <= i) {
+                NSLog(@"番号２for(if)");
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            }
+        }
+        
+        
+        ///
         [self initShaders];
     }
     return self;
@@ -306,6 +337,12 @@ namespace {
         [augmentationTexture[i] release];
     }
     
+    for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+        NSLog(@"番号5for1");
+        [augumentationObj[i] release];
+    }
+
+    
     for (int i = 0; i < NUM_VIDEO_TARGETS; ++i) {
         NSLog(@"番号5for2");
         [videoPlayerHelper[i] release];
@@ -313,6 +350,45 @@ namespace {
     //[buildingModel release];
     [super dealloc];
 }
+
+/*
+///texture_try
+for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+    NSLog(@"番号2for1");
+    //textureFilenames:表示するファイルの画像
+    augumentationObj[i] = [[objectTex alloc] initWithImageFile:[NSString stringWithCString:textureFilenamesObj[i] encoding:NSASCIIStringEncoding]];
+    NSLog(@"texture= %@", [[objectTex alloc] initWithImageFile:[NSString stringWithCString:textureFilenamesObj[i] encoding:NSASCIIStringEncoding]]);
+}
+
+
+for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+    //NUM_AUGMENTATION_TEXTURES: "icon_play.png","icon_loading.png","icon_error.png","VuforiaSizzleReel_1.png","VuforiaSizzleReel_2.png"
+    NSLog(@"番号２for2");
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    [augumentationObj[i] setTextureIDO:textureID];
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, [augumentationObj[i] widthO], [augumentationObj[i] heightO], 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)[augumentationObj[i] pngDataO]);
+    
+    
+    
+    // Set appropriate texture parameters (for NPOT textures)
+    if (OBJECT_KEYFRAME_1 <= i) {
+        NSLog(@"番号２for(if)");
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+}
+
+
+for (int i = 0; i < NUM_AUGMENTATION_TEXTURES_obj; ++i) {
+    NSLog(@"番号5for1");
+    [augumentationObj[i] release];
+}
+////*/
+
 
 
 - (void)finishOpenGLESCommands
@@ -492,10 +568,8 @@ namespace {
             }
         }
     }
-    
     [dataLock unlock];
     // ----- End synchronise data access -----
-    
     return touchInTarget;
 }
     
@@ -505,8 +579,6 @@ namespace {
     NSLog(@"番号13");
     return videoPlayerHelper[index];
 }
-
-
 
 
 
@@ -605,6 +677,11 @@ namespace {
         if (playerIndex == 0){
             //オブジェクト描画
             
+            
+
+            
+            
+            
             // Get the trackable怪しい（変更点）
             /*
             const QCAR::TrackableResult* result = state.getTrackableResult(i);
@@ -665,10 +742,11 @@ namespace {
             
             if (offTargetTrackingEnabled) {
                 NSLog(@"番号8a4a");
-                glBindTexture(GL_TEXTURE_2D, augmentationTexture[3].textureID);
+                glBindTexture(GL_TEXTURE_2D, augumentationObj[3].textureIDO);
             } else {
                 NSLog(@"番号8b4b");
-                glBindTexture(GL_TEXTURE_2D, augmentationTexture[playerIndex].textureID);
+                glBindTexture(GL_TEXTURE_2D, augumentationObj[playerIndex].textureIDO);
+                
             }
             glUniformMatrix4fv(mvpMatrixHandle, 1, GL_FALSE, (const GLfloat*)&modelViewProjection.data[0]);
             glUniform1i(texSampler2DHandle, 0 /*GL_TEXTURE0*/);
@@ -690,13 +768,13 @@ namespace {
                 //glDrawArrays(GL_TRIANGLES, NUM_CUBE_INDEX, GL_UNSIGNED_SHORT);
                 
             }
-            
             SampleApplicationUtils::checkGlError("EAGLView renderFrameQCAR");
 
             
             
         }else{
             //ビデオ再生
+        
             
             // Assume all targets are inactive (used when determining tap locations)
             //ターゲットを活発じゃない状態にする（初期化）
@@ -809,6 +887,7 @@ namespace {
                 frameTextureID = [t textureID];
                 aspectRatio = (float)[t height] / (float)[t width];
                 texCoords = quadTexCoords;
+                NSLog(@"Texture*t= %@", augmentationTexture[OBJECT_KEYFRAME_1 + playerIndex]);
             }
             
             // Get the current projection matrix

@@ -64,6 +64,9 @@
 		18F7950A17F7305500C6A8DA /* VideoPlaybackEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18F7950717F7305500C6A8DA /* VideoPlaybackEAGLView.mm */; };
 		18F7950B17F7305500C6A8DA /* VideoPlaybackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18F7950917F7305500C6A8DA /* VideoPlaybackViewController.mm */; };
 		18F7951017F731D200C6A8DA /* VP_about.html in Resources */ = {isa = PBXBuildFile; fileRef = 18F7950F17F731D200C6A8DA /* VP_about.html */; };
+		301D891318E18BD10056FE16 /* TextureTeapotBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 301D891218E18BD10056FE16 /* TextureTeapotBlue.png */; };
+		301D891518E18BDC0056FE16 /* TextureTeapotRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 301D891418E18BDC0056FE16 /* TextureTeapotRed.png */; };
+		301D891718E18BE90056FE16 /* building_texture.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 301D891618E18BE90056FE16 /* building_texture.jpeg */; };
 		304BB2CD18DA88040091DDF6 /* SampleApplication3DModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 304BB2CC18DA88040091DDF6 /* SampleApplication3DModel.m */; };
 		304BB2CF18DA9BAB0091DDF6 /* Tarmac.xml in Resources */ = {isa = PBXBuildFile; fileRef = 304BB2CE18DA9BAB0091DDF6 /* Tarmac.xml */; };
 		304BB2D618DACFA60091DDF6 /* try.xml in Resources */ = {isa = PBXBuildFile; fileRef = 304BB2D518DACFA60091DDF6 /* try.xml */; };
@@ -147,6 +150,9 @@
 		18F7950817F7305500C6A8DA /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
 		18F7950917F7305500C6A8DA /* VideoPlaybackViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoPlaybackViewController.mm; sourceTree = "<group>"; };
 		18F7950F17F731D200C6A8DA /* VP_about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = VP_about.html; sourceTree = "<group>"; };
+		301D891218E18BD10056FE16 /* TextureTeapotBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TextureTeapotBlue.png; sourceTree = "<group>"; };
+		301D891418E18BDC0056FE16 /* TextureTeapotRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TextureTeapotRed.png; sourceTree = "<group>"; };
+		301D891618E18BE90056FE16 /* building_texture.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = building_texture.jpeg; sourceTree = "<group>"; };
 		304BB2CB18DA87FC0091DDF6 /* SampleApplication3DModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleApplication3DModel.h; sourceTree = "<group>"; };
 		304BB2CC18DA88040091DDF6 /* SampleApplication3DModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleApplication3DModel.m; sourceTree = "<group>"; };
 		304BB2CE18DA9BAB0091DDF6 /* Tarmac.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Tarmac.xml; sourceTree = "<group>"; };
@@ -368,10 +374,21 @@
 				1859940817FB67AF00D5A49F /* VuforiaSizzleReel_2.png */,
 				3071B57218BDBD15009E90AB /* sample_iPod.m4v */,
 				3071B57418BF0506009E90AB /* vuforia.mov */,
+				301D891118E18BBD0056FE16 /* object */,
 				304BB2D018DA9BFD0091DDF6 /* tracker */,
 				18F7950F17F731D200C6A8DA /* VP_about.html */,
 			);
 			path = VideoPlayback;
+			sourceTree = "<group>";
+		};
+		301D891118E18BBD0056FE16 /* object */ = {
+			isa = PBXGroup;
+			children = (
+				301D891218E18BD10056FE16 /* TextureTeapotBlue.png */,
+				301D891418E18BDC0056FE16 /* TextureTeapotRed.png */,
+				301D891618E18BE90056FE16 /* building_texture.jpeg */,
+			);
+			name = object;
 			sourceTree = "<group>";
 		};
 		304BB2D018DA9BFD0091DDF6 /* tracker */ = {
@@ -450,9 +467,11 @@
 				18F794BE17F7224400C6A8DA /* Default-Portrait@2x~ipad.png in Resources */,
 				18F794BF17F7224400C6A8DA /* Default-Portrait~ipad.png in Resources */,
 				18F794C417F7243D00C6A8DA /* app_icon_iPhone.png in Resources */,
+				301D891718E18BE90056FE16 /* building_texture.jpeg in Resources */,
 				18F794D417F7297600C6A8DA /* SampleAppAboutViewController.xib in Resources */,
 				3071B57518BF0506009E90AB /* vuforia.mov in Resources */,
 				18F794ED17F72A9100C6A8DA /* Line.fragsh in Resources */,
+				301D891318E18BD10056FE16 /* TextureTeapotBlue.png in Resources */,
 				18F794EE17F72A9100C6A8DA /* Line.vertsh in Resources */,
 				18F794EF17F72A9100C6A8DA /* Simple.fragsh in Resources */,
 				18F794F017F72A9100C6A8DA /* Simple.vertsh in Resources */,
@@ -460,6 +479,7 @@
 				185993F417FB63F600D5A49F /* StonesAndChips.dat in Resources */,
 				185993F517FB63F600D5A49F /* StonesAndChips.xml in Resources */,
 				304BB2CF18DA9BAB0091DDF6 /* Tarmac.xml in Resources */,
+				301D891518E18BDC0056FE16 /* TextureTeapotRed.png in Resources */,
 				1859940917FB67AF00D5A49F /* icon_error.png in Resources */,
 				1859940A17FB67AF00D5A49F /* icon_loading.png in Resources */,
 				1859940B17FB67AF00D5A49F /* icon_play.png in Resources */,
