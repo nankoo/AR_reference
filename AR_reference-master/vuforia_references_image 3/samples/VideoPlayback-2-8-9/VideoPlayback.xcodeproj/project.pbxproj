@@ -69,9 +69,11 @@
 		301D891718E18BE90056FE16 /* building_texture.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 301D891618E18BE90056FE16 /* building_texture.jpeg */; };
 		304BB2CD18DA88040091DDF6 /* SampleApplication3DModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 304BB2CC18DA88040091DDF6 /* SampleApplication3DModel.m */; };
 		3060738218DFE00600933DEF /* objectTex.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3060738118DFE00600933DEF /* objectTex.mm */; };
+		3060CD8F18EC1A6C00F6231E /* geechs.png in Resources */ = {isa = PBXBuildFile; fileRef = 3060CD8E18EC1A6C00F6231E /* geechs.png */; };
 		3071B57518BF0506009E90AB /* vuforia.mov in Resources */ = {isa = PBXBuildFile; fileRef = 3071B57418BF0506009E90AB /* vuforia.mov */; };
 		30E0530018EC07CD006AAAD5 /* test.dat in Resources */ = {isa = PBXBuildFile; fileRef = 30E052FE18EC07CD006AAAD5 /* test.dat */; };
 		30E0530118EC07CD006AAAD5 /* test.xml in Resources */ = {isa = PBXBuildFile; fileRef = 30E052FF18EC07CD006AAAD5 /* test.xml */; };
+		30E0530518EC103C006AAAD5 /* geechsAR用_131119_ver3.mov in Resources */ = {isa = PBXBuildFile; fileRef = 30E0530418EC103C006AAAD5 /* geechsAR用_131119_ver3.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,10 +159,12 @@
 		304BB2CC18DA88040091DDF6 /* SampleApplication3DModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleApplication3DModel.m; sourceTree = "<group>"; };
 		3060738018DFE00000933DEF /* objectTex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = objectTex.h; sourceTree = "<group>"; };
 		3060738118DFE00600933DEF /* objectTex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = objectTex.mm; sourceTree = "<group>"; };
+		3060CD8E18EC1A6C00F6231E /* geechs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = geechs.png; sourceTree = "<group>"; };
 		3071B57218BDBD15009E90AB /* sample_iPod.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_iPod.m4v; sourceTree = "<group>"; };
 		3071B57418BF0506009E90AB /* vuforia.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = vuforia.mov; sourceTree = "<group>"; };
 		30E052FE18EC07CD006AAAD5 /* test.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.dat; sourceTree = "<group>"; };
 		30E052FF18EC07CD006AAAD5 /* test.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.xml; sourceTree = "<group>"; };
+		30E0530418EC103C006AAAD5 /* geechsAR用_131119_ver3.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "geechsAR用_131119_ver3.mov"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -366,6 +370,8 @@
 				1859940217FB67AF00D5A49F /* start_large.png */,
 				1859940317FB67AF00D5A49F /* start_medium_press.png */,
 				1859940417FB67AF00D5A49F /* start_medium.png */,
+				3060CD8E18EC1A6C00F6231E /* geechs.png */,
+				30E0530418EC103C006AAAD5 /* geechsAR用_131119_ver3.mov */,
 				1859940517FB67AF00D5A49F /* VuforiaSizzleReel_1.m4v */,
 				1859940617FB67AF00D5A49F /* VuforiaSizzleReel_1.png */,
 				1859940717FB67AF00D5A49F /* VuforiaSizzleReel_2.m4v */,
@@ -453,6 +459,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18F7949317F720CB00C6A8DA /* InfoPlist.strings in Resources */,
+				3060CD8F18EC1A6C00F6231E /* geechs.png in Resources */,
 				30E0530118EC07CD006AAAD5 /* test.xml in Resources */,
 				18F7949B17F720CB00C6A8DA /* Default.png in Resources */,
 				18F7949D17F720CB00C6A8DA /* Default@2x.png in Resources */,
@@ -485,6 +492,7 @@
 				1859940F17FB67AF00D5A49F /* start_medium.png in Resources */,
 				1859941017FB67AF00D5A49F /* VuforiaSizzleReel_1.m4v in Resources */,
 				1859941117FB67AF00D5A49F /* VuforiaSizzleReel_1.png in Resources */,
+				30E0530518EC103C006AAAD5 /* geechsAR用_131119_ver3.mov in Resources */,
 				1859941217FB67AF00D5A49F /* VuforiaSizzleReel_2.m4v in Resources */,
 				1859941317FB67AF00D5A49F /* VuforiaSizzleReel_2.png in Resources */,
 			);

@@ -64,8 +64,8 @@ namespace {
         "icon_play.png",
         "icon_loading.png",
         "icon_error.png",
-        "VuforiaSizzleReel_1.png",
-        "VuforiaSizzleReel_2.png"
+        "geechs.png",
+        "geechs.png"
     };
 
 
@@ -289,15 +289,18 @@ namespace {
                 //movie
             case 0:
                 NSLog(@"番号3for3:switch");
-            filename = @"vuforia.mov";
+        //    filename = @"vuforia.mov";
             //filename = @"VuforiaSizzleReel_1.m4v";
+                filename = @"VuforiaSizzleReel_2.m4v";
+
             
             break;
                 //defaultの意味って？
             default:
-            filename = @"VuforiaSizzleReel_2.m4v";
+      //      filename = @"VuforiaSizzleReel_2.m4v";
             //filename = @"sample_iPod.m4v";
-            
+                filename = @"geechsAR用_131119_ver3.mov";
+
             break;
         }
     
